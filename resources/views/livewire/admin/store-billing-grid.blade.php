@@ -609,7 +609,11 @@
                         <h5 class="modal-title fw-bold" id="receiptModalLabel">
                             <i class="bi bi-receipt me-2"></i>Sales Receipt
                         </h5>
-                        <div class="ms-auto d-flex gap-2">
+                        <div class="ms-auto d-flex gap-2 align-items-center">
+                            <select id="printSizeSelect" class="form-select form-select-sm me-2" style="width: 170px;">
+                                <option value="A4">A4</option>
+                                <option value="thermal">Thermal (80mm)</option>
+                            </select>
                             <button type="button" class="btn btn-sm" id="printButton" style="background-color: #233D7F; border-color:#fff; color: #fff;">
                                 <i class="bi bi-printer me-1"></i>Print
                             </button>
@@ -644,7 +648,7 @@
                                     <thead style="background-color: #233D7F; color: white;">
                                         <tr>
                                             <th>No</th>
-                                            <th>Item Description</th>
+                                            <th>Item</th>
                                             <th>Qty</th>
                                             <th>Price</th>
                                             <th>Dis/unit</th>
@@ -658,9 +662,9 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $item['name'] ?? 'Unknown Item' }}</td>
                                             <td>{{ $item['quantity'] ?? 0 }}</td>
-                                            <td>Rs {{ number_format($item['price'] ?? 0, 2) }}</td>
-                                            <td>Rs {{ number_format($item['discount'] ?? 0, 2) }}</td>
-                                            <td>Rs {{ number_format($item['total'] ?? 0, 2) }}</td>
+                                            <td>{{ number_format($item['price'] ?? 0, 2) }}</td>
+                                            <td>{{ number_format($item['discount'] ?? 0, 2) }}</td>
+                                            <td> {{ number_format($item['total'] ?? 0, 2) }}</td>
                                         </tr>
                                         @endforeach
                                         @else
@@ -670,17 +674,17 @@
                                         @endif
                                         <tr>
                                             <td colspan="5" class="text-end"><strong>Subtotal:</strong></td>
-                                            <td><strong>Rs {{ number_format($receipt['subtotal'] ?? 0, 2) }}</strong></td>
+                                            <td><strong>{{ number_format($receipt['subtotal'] ?? 0, 2) }}</strong></td>
                                         </tr>
                                         @if(($receipt['discount'] ?? 0) > 0)
                                         <tr>
                                             <td colspan="5" class="text-end"><strong>Total Discount:</strong></td>
-                                            <td><strong>- Rs {{ number_format($receipt['discount'] ?? 0, 2) }}</strong></td>
+                                            <td><strong>- {{ number_format($receipt['discount'] ?? 0, 2) }}</strong></td>
                                         </tr>
                                         @endif
                                         <tr>
                                             <td colspan="5" class="text-end"><strong>Grand Total:</strong></td>
-                                            <td><strong>Rs {{ number_format($receipt['total'] ?? 0, 2) }}</strong></td>
+                                            <td><strong>{{ number_format($receipt['total'] ?? 0, 2) }}</strong></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -752,8 +756,16 @@
                 });
             });
 
-            // Print button
+            // Print button + print size selector (persisted)
             const printButton = document.getElementById('printButton');
+            const printSizeSelect = document.getElementById('printSizeSelect');
+            if (printSizeSelect) {
+                const savedFormat = localStorage.getItem('printFormat') || 'A4';
+                printSizeSelect.value = savedFormat;
+                printSizeSelect.addEventListener('change', function() {
+                    localStorage.setItem('printFormat', this.value);
+                });
+            }
             if (printButton) {
                 printButton.addEventListener('click', function() {
                     printSalesReceipt();
@@ -782,37 +794,341 @@
                 return;
             }
 
+            // Determine format (A4 or thermal)
+            const format = document.getElementById('printSizeSelect')?.value || localStorage.getItem('printFormat') || 'A4';
+
+            // Extract data from receipt modal
+            const rowDiv = receiptContent.querySelector('.row.mb-2');
+            const leftCol = rowDiv?.querySelector('.col-md-6:first-child');
+            const rightCol = rowDiv?.querySelector('.col-md-6:last-child');
+
+            // Extract customer information (from left column)
+            let customerName = 'Walk-in Customer';
+            let customerAddress = '';
+            let customerPhone = '';
+
+            if (leftCol) {
+                const customerNameP = leftCol.querySelector('p:first-child');
+                if (customerNameP && customerNameP.textContent.includes('Customer Name:')) {
+                    customerName = customerNameP.textContent.replace('Customer Name:', '').trim();
+                }
+
+                const customerAddressP = leftCol.querySelector('p:nth-child(2)');
+                if (customerAddressP && customerAddressP.textContent.includes('Address :')) {
+                    customerAddress = customerAddressP.textContent.replace('Address :', '').trim();
+                }
+
+                const customerPhoneP = leftCol.querySelector('p:nth-child(3)');
+                if (customerPhoneP && customerPhoneP.textContent.includes('Phone :')) {
+                    customerPhone = customerPhoneP.textContent.replace('Phone :', '').trim();
+                }
+            }
+
+            // Extract invoice information (from right column)
+            let invoiceNumber = '';
+            let date = '';
+
+            if (rightCol) {
+                const invoiceP = rightCol.querySelector('p:first-child');
+                if (invoiceP && invoiceP.textContent.includes('Invoice Number:')) {
+                    invoiceNumber = invoiceP.textContent.replace('Invoice Number:', '').trim();
+                }
+
+                const dateP = rightCol.querySelector('p:nth-child(2)');
+                if (dateP && dateP.textContent.includes('Date:')) {
+                    date = dateP.textContent.replace('Date:', '').trim();
+                }
+            }
+
+            // Get items table
+            const itemsTable = receiptContent.querySelector('.table-bordered');
+
             const printWindow = window.open('', '_blank', 'height=600,width=800');
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Sales Receipt</title>
-                    <style>
-                        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+            if (format === 'thermal') {
+                // Compact styles for 80mm thermal paper
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Sales Receipt - ${invoiceNumber}</title>
+                        <style>
+                            *{margin:0;padding:0;box-sizing:border-box}
+                            @page { size: 80mm auto; margin: 3mm; }
+                            body{font-family: 'Courier New', monospace !important; padding:8px; font-size:12px; line-height:1.2; color:#000; width:78mm}
+                            .company-name{font-size:18px; font-weight:bold; text-align:center}
+                            .company-address{font-size:11px; text-align:center; margin-bottom:6px}
+                            .dashed{border-top:1px dashed #000; margin:6px 0}
+                            table{width:100%; border-collapse:collapse; font-size:11px}
+                            table td{padding:3px 0; vertical-align:top}
+                            .text-right{text-align:right}
+                            .text-center{text-align:center}
+                            .footer{margin-top:8px; font-size:11px; text-align:center}
+                            @media print{ body{padding:2mm} }
+                        </style>
+                    </head>
+                    <body>
+                        <div>
+                            <div class="company-name">THILAK HARDWARE</div>
+                            <div class="company-address">MARUTI - LEYLAND - MAHINDRA - TATA - ALTO</div>
+                            <div class="company-address">Phone: 077 6718838</div>
+                            <div class="dashed"></div>
+
+                            <table>
+                                <tr><td><strong>Name:</strong></td><td>${customerName}</td></tr>
+                                <tr><td><strong>Address:</strong></td><td>${customerAddress}</td></tr>
+                                <tr><td><strong>Phone:</strong></td><td>${customerPhone}</td></tr>
+                                <tr><td><strong>Invoice:</strong></td><td>${invoiceNumber}</td></tr>
+                                <tr><td><strong>Date:</strong></td><td>${date}</td></tr>
+                            </table>
+
+                            <div class="dashed"></div>
+
+                            ${itemsTable ? itemsTable.outerHTML.replace(/table\s*/i, 'table style="width:100%;"') : ''}
+
+                            <div class="dashed"></div>
+                            <div class="footer">
+                                <div>*****ORIGINAL*****</div>
+                                <div>Please draw the cheque in favor of M.A.Z Ahamed</div>
+                                <div>Peoples Bank Acc No: 2781-0010-2421-207</div>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `);
+            } else {
+                // A4 (default) - use existing full layout
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Sales Receipt - ${invoiceNumber}</title>
+                        <style>
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
                         @page { size: A4; margin: 1cm; }
                         body { 
-                            font-family: 'Courier New', monospace; 
+                            font-family: 'Courier New', monospace !important; 
                             padding: 20px;
                             font-size: 14px;
                             line-height: 1.4;
                             color: #000;
+                            font-weight: bold;
+                        }
+                        .receipt-container {
+                            max-width: 800px;
+                            margin: 0 auto;
+                            padding: 0;
+                        }
+                        .company-header {
+                            text-align: center;
+                            margin-bottom: 5px;
+                            border-bottom: 2px solid #000;
+                            padding-bottom: 15px;
+                            font-weight: bold;
+                        }
+                        .company-name {
+                            font-size: 28px;
+                            font-weight: bold;
+                            color: #000;
+                            margin-bottom: 5px;
+                        }
+                        .company-address {
+                            font-size: 18px;
+                            color: #000;
+                            margin: 3px 0;
+                        }
+                        .receipt-title {
+                            font-size: 14px;
+                            font-weight: bold;
+                            color: #000;
+                            text-align: right;
+                            margin: 5px 0;
+                            padding-bottom: 10px;
+                        }
+                        .info-row {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 2px;
+                        }
+                        .info-section {
+                            width: 48%;
+                            padding: 8px;
+                        }
+                        .info-section h6 {
+                            color: #000;
+                            font-weight: bold;
+                            padding-bottom: 4px;
+                            margin-bottom: 4px;
+                            font-size: 13px;
+                        }
+                        .info-section table {
+                            width: 100%;
+                            font-size: 14px;
+                            border: none;
+                        }
+                        .info-section td {
+                            padding: 2px 0;
+                            color: #000 !important;
+                            border: none;
+                        }
+                        .info-label {
+                            font-weight: bold;
+                            display: inline-block;
+                            width: 140px;
+                        }
+                        .info-value {
+                            display: inline-block;
                         }
                         .text-center { text-align: center; }
-                        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-                        table th, table td { border: 1px solid #000; padding: 8px; text-align: left; }
-                        table th { background-color: #f0f0f0; font-weight: bold; }
+                        .text-right { text-align: right; }
+                        .fw-bold { font-weight: bold; }
+                        .mb-1 { margin-bottom: 0.25rem; }
+                        .mb-2 { margin-bottom: 0.5rem; }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 5px 0 20px;
+                        }
+                        table th, table td {
+                            border: 1px solid #000;
+                            padding: 3px;
+                            text-align: left;
+                            font-family: 'Courier New', monospace !important;
+                            color: #000 !important;
+                        }
+                        table th {
+                            background-color: #f0f0f0;
+                            font-weight: bold;
+                        }
+                        
+                        /* Footer Styling */
+                        .footer {
+                            text-align: center;
+                            margin-bottom: 100px;
+                            padding-top: 20px;
+                            color: #000;
+                            position: absolute;
+                            bottom: 20px;
+                            width: 100%;
+                        }
+                        
+                        .signature-row {
+                            display: flex;
+                            justify-content: space-around;
+                            margin-bottom: 5px;
+                            text-align: center;
+                        }
+                        
+                        .check {
+                            flex: 1;
+                            padding: 0 10px;
+                        }
+                        
+                        .check .signature-line {
+                            padding-bottom: 2px;
+                            min-height: 30px;
+                        }
+                        
+                        .check .label {
+                            font-size: 11px;
+                            font-weight: bold;
+                            color: #000 !important;
+                        }
+                        
+                        .footer p {
+                            margin: 0;
+                            font-size: 11px;
+                            color: #000 !important;
+                            font-weight: bold;
+                        }
+                        
+                        .footer .original {
+                            font-size: 12px;
+                            font-weight: bold;
+                            margin: 25px 0 0;
+                            letter-spacing: 2px;
+                        }
+                        
+                        .footer .bank-info {
+                            font-size: 11px;
+                            margin: 2px 0;
+                        }
+                        
+                        .footer .return-policy {
+                            font-size: 11px;
+                            margin-top: 5px;
+                            padding: 3px 0;
+                            font-weight: bold;
+                        }
+                        
+                        h3, h4, h5, h6, p, strong, span, td, th, div {
+                            font-family: 'Courier New', monospace !important;
+                            color: #000 !important;
+                        }
+                        
                         @media print { 
                             .no-print { display: none; }
                             body { padding: 10px; }
+                            * { color: #000 !important; }
                         }
                     </style>
-                </head>
-                <body>
-                    ${receiptContent.innerHTML}
-                </body>
-                </html>
-            `);
+                    </head>
+                    <body>
+                        <div class="receipt-container">
+                            <div class="company-header">
+                                <div class="company-name">THILAK HARDWARE</div>
+                                <div class="company-address"> for</div>
+                                <div class="company-address">MARUTI - LEYLAND - MAHINDRA - TATA - ALTO</div>
+                                <div class="company-address">Phone: 077 6718838 | Address: No. 397/3, Dunu Ela, Thihariya, Kalagedihena.</div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-section">
+                                    <table>
+                                        <tr><td>Name:</td><td>${customerName}</td></tr>
+                                        <tr><td>Address:</td><td>${customerAddress}</td></tr>
+                                        <tr><td>Phone:</td><td>${customerPhone}</td></tr>
+                                    </table>
+                                </div>
+                                <div class="info-section">
+                                    <table>
+                                        <tr><td>Invoice Number:</td><td>${invoiceNumber}</td></tr>
+                                        <tr><td>Date:</td><td>${date}</td></tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            ${itemsTable ? itemsTable.outerHTML : ''}
+
+                            <div class="footer">
+                                <div class="signature-row">
+                                    <div class="check">
+                                        <div class="signature-line">...........................</div>
+                                        <div class="label">Receiver's Signature</div>
+                                    </div>
+                                    <div class="check">
+                                        <div class="signature-line">...........................</div>
+                                        <div class="label">Check By</div>
+                                    </div>
+                                    <div class="check">
+                                        <div class="signature-line">...........................</div>
+                                        <div class="label">Authorized Signature</div>
+                                    </div>
+                                </div>
+                                <p class="original">*****ORIGINAL*****</p>
+                                <p>Please draw the cheque in favor of M.A.Z Ahamed</p>
+                                <p class="bank-info">Peoples Bank Acc No: 2781-0010-2421-207</p>
+                                <p class="return-policy">||RETURN GOODS WILL BE ACCEPTED WITHIN 30 DAYS ONLY||</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `);
+            }
 
             printWindow.document.close();
             printWindow.focus();

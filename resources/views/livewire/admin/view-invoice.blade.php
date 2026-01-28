@@ -249,7 +249,11 @@
                     <h5 class="modal-title fw-bold tracking-tight">
                         <i class="bi bi-receipt me-2"></i>Sales Receipt
                     </h5>
-                    <div class="ms-auto d-flex gap-2">
+                    <div class="ms-auto d-flex gap-2 align-items-center">
+                        <select id="printSizeSelectInvoice" class="form-select form-select-sm me-2" style="width:170px;">
+                            <option value="A4">A4</option>
+                            <option value="thermal">Thermal (80mm)</option>
+                        </select>
                         <button type="button" class="btn btn-sm rounded-full px-3 transition-all hover:shadow"
                             onclick="printInvoice()" style="background-color: #233D7F;border-color:#fff; color: #fff;">
                             <i class="bi bi-printer me-1"></i>Print
@@ -491,7 +495,7 @@
     }
 
     .table tbody td {
-        padding: 1rem 0.75rem !important;
+        padding: 0.5rem 0.75rem !important;
         color: #4b5563;
         vertical-align: middle;
         border: 1px solid #e5e7eb;
@@ -673,6 +677,9 @@
 
         const modalBody = modal.querySelector('#invoiceContent');
 
+        // Determine print format
+        const format = document.getElementById('printSizeSelectInvoice')?.value || localStorage.getItem('printFormat') || 'A4';
+
         // Extract customer information
         const leftCol = modalBody.querySelector('.col-md-6:first-child');
         let customerName = 'Walk-in Customer';
@@ -721,12 +728,63 @@
 
         const printWindow = window.open('', '_blank', 'height=600,width=800');
 
-        printWindow.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Sales Invoice - ${invoiceNumber}</title>
-                <style>
+        if (format === 'thermal') {
+            // Thermal (80mm) compact style
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Sales Invoice - ${invoiceNumber}</title>
+                    <style>
+                        *{margin:0;padding:0;box-sizing:border-box}
+                        @page{size:80mm auto; margin:3mm}
+                        body{font-family:'Courier New', monospace !important; padding:8px; font-size:12px; width:78mm; color:#000}
+                        .company-name{font-size:18px;text-align:center;font-weight:bold}
+                        .company-address{font-size:11px;text-align:center;margin-bottom:6px}
+                        .dashed{border-top:1px dashed #000;margin:6px 0}
+                        table{width:100%;border-collapse:collapse;font-size:11px}
+                        table td{padding:3px 0}
+                        .text-right{text-align:right}
+                        .footer{margin-top:8px;font-size:11px;text-align:center}
+                        @media print{body{padding:2mm}}
+                    </style>
+                </head>
+                <body>
+                    <div>
+                        <div class="company-name">THILAK HARDWARE</div>
+                        <div class="company-address">MARUTI - LEYLAND - MAHINDRA - TATA - ALTO</div>
+                        <div class="company-address">Phone: 077 6718838</div>
+                        <div class="dashed"></div>
+
+                        <table>
+                            <tr><td><strong>Name:</strong></td><td>${customerName}</td></tr>
+                            <tr><td><strong>Address:</strong></td><td>${customerAddress}</td></tr>
+                            <tr><td><strong>Phone:</strong></td><td>${customerPhone}</td></tr>
+                            <tr><td><strong>Invoice:</strong></td><td>${invoiceNumber}</td></tr>
+                            <tr><td><strong>Date:</strong></td><td>${date}</td></tr>
+                        </table>
+
+                        <div class="dashed"></div>
+                        ${itemsTable ? itemsTable.outerHTML.replace(/table\s*/i, 'table style="width:100%;"') : ''}
+
+                        <div class="dashed"></div>
+                        <div class="footer">
+                            <div>*****ORIGINAL*****</div>
+                            <div>Please draw the cheque in favor of M.A.Z Ahamed</div>
+                            <div>Peoples Bank Acc No: 2781-0010-2421-207</div>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+        } else {
+            // A4 full layout (existing)
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Sales Invoice - ${invoiceNumber}</title>
+                    <style>
                     * {
                         margin: 0;
                         padding: 0;
@@ -881,62 +939,59 @@
                         * { color: #000 !important; }
                     }
                 </style>
-            </head>
-            <body>
-                <div class="receipt-container">
-                    <div class="company-header">
-                        <div class="company-name">THILAK HARDWARE</div>
-                        <div class="company-address"> for</div>
-                        <div class="company-address">MARUTI - LEYLAND - MAHINDRA - TATA - ALTO</div>
-                        <div class="company-address">Phone: 077 6718838 | Address: No. 397/3, Dunu Ela, Thihariya, Kalagedihena.</div>
-                    </div>
-                    
-                    <div class="info-row">
-                        <div class="info-section">
-                            <table>
-                                <tr><td>Name:</td><td>${customerName}</td></tr>
-                                <tr><td>Address:</td><td>${customerAddress}</td></tr>
-                                <tr><td>Phone:</td><td>${customerPhone}</td></tr>
-                            </table>
+                </head>
+                <body>
+                    <div class="receipt-container">
+                        <div class="company-header">
+                            <div class="company-name">THILAK HARDWARE</div>
+                            <div class="company-address"> for</div>
+                            <div class="company-address">MARUTI - LEYLAND - MAHINDRA - TATA - ALTO</div>
+                            <div class="company-address">Phone: 077 6718838 | Address: No. 397/3, Dunu Ela, Thihariya, Kalagedihena.</div>
                         </div>
-                        <div class="info-section">
-                            <table>
-                                <tr><td>Invoice Number:</td><td>${invoiceNumber}</td></tr>
-                                <tr><td>Date:</td><td>${date}</td></tr>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    ${itemsTable ? itemsTable.outerHTML : ''}
-                    
-                    ${returnTableHTML}
-                    
-                    <div class="footer">
-                        <div class="signature-row">
-                            <div class="check">
-                                <div class="signature-line">...........................</div>
-                                <div class="label">Receiver's Signature</div>
+                        
+                        <div class="info-row">
+                            <div class="info-section">
+                                <table>
+                                    <tr><td>Name:</td><td>${customerName}</td></tr>
+                                    <tr><td>Address:</td><td>${customerAddress}</td></tr>
+                                    <tr><td>Phone:</td><td>${customerPhone}</td></tr>
+                                </table>
                             </div>
-                            <div class="check">
-                                <div class="signature-line">...........................</div>
-                                <div class="label">Check By</div>
-                            </div>
-                            <div class="check">
-                                <div class="signature-line">...........................</div>
-                                <div class="label">Authorized Signature</div>
+                            <div class="info-section">
+                                <table>
+                                    <tr><td>Invoice Number:</td><td>${invoiceNumber}</td></tr>
+                                    <tr><td>Date:</td><td>${date}</td></tr>
+                                </table>
                             </div>
                         </div>
                         
-                        <p class="original">*****ORIGINAL*****</p>
-                        <p>Please draw the cheque in favor of M.A.Z Ahamed</p>
-                        <p class="bank-info">Peoples Bank Acc No: 2781-0010-2421-207</p>
-                        <p class="return-policy">||RETURN GOODS WILL BE ACCEPTED WITHIN 30 DAYS ONLY||</p>
+                        ${itemsTable ? itemsTable.outerHTML : ''}
+                        
+                        <div class="footer">
+                            <div class="signature-row">
+                                <div class="check">
+                                    <div class="signature-line">...........................</div>
+                                    <div class="label">Receiver's Signature</div>
+                                </div>
+                                <div class="check">
+                                    <div class="signature-line">...........................</div>
+                                    <div class="label">Check By</div>
+                                </div>
+                                <div class="check">
+                                    <div class="signature-line">...........................</div>
+                                    <div class="label">Authorized Signature</div>
+                                </div>
+                            </div>
+                            <p class="original">*****ORIGINAL*****</p>
+                            <p>Please draw the cheque in favor of M.A.Z Ahamed</p>
+                            <p class="bank-info">Peoples Bank Acc No: 2781-0010-2421-207</p>
+                            <p class="return-policy">||RETURN GOODS WILL BE ACCEPTED WITHIN 30 DAYS ONLY||</p>
+                        </div>
                     </div>
-                </div>
-                
-            </body>
-            </html>
-        `);
+                </body>
+                </html>
+            `);
+        }
 
         printWindow.document.close();
         printWindow.focus();
@@ -950,6 +1005,13 @@
     document.addEventListener('livewire:initialized', () => {
         @this.on('openInvoiceModal', () => {
             let modal = new bootstrap.Modal(document.getElementById('invoiceModal'));
+            const sel = document.getElementById('printSizeSelectInvoice');
+            if (sel) {
+                sel.value = localStorage.getItem('printFormat') || 'A4';
+                sel.addEventListener('change', function() {
+                    localStorage.setItem('printFormat', this.value);
+                });
+            }
             modal.show();
         });
     });
