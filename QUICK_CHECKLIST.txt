@@ -1,0 +1,59 @@
+🔥 QUICK FIX CHECKLIST - Livewire Error on Hostinger
+====================================================
+
+## FILES TO UPLOAD:
+□ public/.htaccess (UPDATED - includes [QSA,L] flags)
+□ config/livewire.php (NEW FILE - must upload!)
+□ app/Livewire/Admin/StoreBilling.php (optimized)
+□ resources/views/livewire/admin/store-billing.blade.php (debounce added)
+□ database/migrations/2026_01_08_051450_add_indexes_to_product_details_table.php
+
+## ON YOUR HOSTINGER SERVER:
+
+### 1. Edit .env file:
+```
+APP_URL=https://yourdomain.com  ← MUST MATCH EXACTLY!
+SESSION_DRIVER=database
+SESSION_SECURE_COOKIE=true (false if no HTTPS)
+SESSION_DOMAIN=.yourdomain.com
+```
+
+### 2. Run these commands via SSH:
+```bash
+php artisan migrate
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
+php artisan livewire:publish --assets --force
+```
+
+### 3. Test in Incognito browser:
+□ Clear browser cache (Ctrl+Shift+Delete)
+□ Open incognito/private window
+□ Test search functionality
+
+## IF ERROR PERSISTS:
+
+### Quick Fix #1: Change .env
+```env
+SESSION_DRIVER=file
+SESSION_SECURE_COOKIE=false
+```
+Then: php artisan config:clear
+
+### Quick Fix #2: Verify Document Root
+Hostinger Panel → Domains → Should point to /public folder
+
+### Quick Fix #3: Check PHP Version
+Hostinger Panel → PHP Config → Use PHP 8.1 or 8.2
+
+## CONTACT HOSTINGER IF:
+- mod_rewrite not enabled
+- .htaccess not working
+- Still getting same error after all steps
+
+## SUCCESS INDICATORS:
+✅ Search works without errors
+✅ Fast search response (< 1 second)
+✅ No MethodNotAllowedHttpException
