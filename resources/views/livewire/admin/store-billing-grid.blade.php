@@ -35,6 +35,25 @@
             scrollbar-width: none;
         }
 
+        /* Subtle scrollbar for categories */
+        .category-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .category-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 3px;
+        }
+
+        .category-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .category-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
         .search-results-container {
             z-index: 1050;
         }
@@ -120,17 +139,19 @@
                 </div>
 
                 <!-- Categories Chips -->
-                <div class="px-6 py-2 flex gap-3 overflow-x-auto no-scrollbar shrink-0">
-                    <button wire:click="filterByCategory(null)"
-                        class="flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg {{ $selectedCategory === null ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-900 hover:border-blue-600' }} px-5 text-sm font-semibold whitespace-nowrap transition-colors">
-                        All Products
-                    </button>
-                    @foreach($categories as $category)
-                    <button wire:click="filterByCategory({{ $category->id }})"
-                        class="flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg {{ $selectedCategory == $category->id ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-900 hover:border-blue-600' }} px-5 text-sm font-medium whitespace-nowrap transition-colors">
-                        {{ $category->name }}
-                    </button>
-                    @endforeach
+                <div class="px-6 py-2 overflow-hidden shrink-0">
+                    <div class="flex gap-3 overflow-x-auto category-scroll pb-2" style="scroll-behavior: smooth;">
+                        <button wire:click="filterByCategory(null)"
+                            class="flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg {{ $selectedCategory === null ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-900 hover:border-blue-600' }} px-5 text-sm font-semibold whitespace-nowrap transition-colors shadow-sm">
+                            All Products
+                        </button>
+                        @foreach($categories as $category)
+                        <button wire:click="filterByCategory({{ $category->id }})"
+                            class="flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg {{ $selectedCategory == $category->id ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-900 hover:border-blue-600' }} px-5 text-sm font-medium whitespace-nowrap transition-colors shadow-sm">
+                            {{ $category->name }}
+                        </button>
+                        @endforeach
+                    </div>
                 </div>
 
                 <!-- Product Grid -->
