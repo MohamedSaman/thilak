@@ -91,6 +91,36 @@
             border-bottom-right-radius: 0.375rem;
             border-left: none;
         }
+
+        /* Search Dropdown Styles */
+        .search-dropdown-container {
+            scroll-behavior: smooth;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-dropdown-item {
+            transition: all 0.15s ease;
+        }
+
+        .search-dropdown-item:hover {
+            transform: translateX(2px);
+        }
+
+        .search-dropdown-item.highlighted {
+            background-color: #eff6ff !important;
+            border-left: 4px solid #2563eb !important;
+        }
+
+        /* Focus visible styles for accessibility */
+        input:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* Alpine.js cloak */
+        [x-cloak] {
+            display: none !important;
+        }
     </style>
     @endpush
 
@@ -128,13 +158,76 @@
         </header>
 
         <main class="flex flex-1 overflow-hidden">
-            <!-- Left Side: Product Discovery (2/3 width) -->
-            <div class="w-2/3 flex flex-col min-w-0 bg-gray-50">
-                <!-- Search Bar (moved here for full width) -->
+            <!-- Left Side: Product Discovery (3/5 width) -->
+            <div class="w-3/5 flex flex-col min-w-0 bg-gray-50" x-data="searchNavigation()" @keydown.window="handleGlobalKeydown($event)">
+                <!-- Search Bar -->
                 <div class="px-6 pb-2 pt-4">
-                    <div class="relative w-full max-w-full">
+                    <div class="relative w-full max-w-full" x-ref="searchContainer">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">search</span>
-                        <input wire:model.live="search" class="w-full h-10 pl-10 pr-4 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/50 text-gray-900 placeholder-gray-500" placeholder="Search products by name or code" type="text" />
+                        <input
+                            id="productSearchInput"
+                            x-ref="searchInput"
+                            wire:model.live="search"
+                            x-on:focus="searchFocused = true"
+                            x-on:blur="setTimeout(() => { searchFocused = false }, 300)"
+                            x-on:keydown.down.prevent="navigateResults('down')"
+                            x-on:keydown.up.prevent="navigateResults('up')"
+                            x-on:keydown.enter.prevent="selectHighlightedProduct()"
+                            x-on:keydown.escape="searchFocused = false; highlightedIndex = -1"
+                            class="w-full h-10 pl-10 pr-4 bg-white border-2 border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
+                            placeholder="Search products by name or code (F2)"
+                            type="text"
+                            autocomplete="off" />
+
+                        <!-- Dropdown Search Results -->
+                        @if(strlen($search) >= 2)
+                        <div
+                            x-show="searchFocused"
+                            x-cloak
+                            x-transition
+                            class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-2xl max-h-96 overflow-y-auto z-50 search-dropdown-container">
+                            @if(count($searchResults) > 0)
+                            @foreach($searchResults as $index => $result)
+                            @if($result->status == 'Available')
+                            <div
+                                wire:click="addToCart({{ $result->id }})"
+                                x-on:mousedown.prevent
+                                x-bind:class="highlightedIndex === {{ $index }} ? 'bg-blue-50 border-l-4 border-l-blue-600' : ''"
+                                class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-all border-b border-gray-100 last:border-b-0 search-dropdown-item"
+                                x-ref="searchResult{{ $index }}"
+                                data-product-id="{{ $result->id }}">
+                                <!-- Product Image -->
+                                <div class="flex-shrink-0">
+                                    @if($result->image_url)
+                                    <img src="{{ $result->image_url }}" alt="{{ $result->product_name }}" class="w-10 h-10 rounded-lg object-cover border border-gray-200">
+                                    @else
+                                    <img src="{{ asset('images/defualt.jpg') }}" alt="{{ $result->product_name }}" class="w-10 h-10 rounded-lg object-cover border border-gray-200">
+                                    @endif
+                                </div>
+
+                                <!-- Product Details -->
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-bold text-gray-900 uppercase truncate">{{ $result->product_name }}</h4>
+                                    <p class="text-xs text-gray-500">
+                                        {{ $result->product_code }}
+                                        | <span class="{{ ($result->stock_quantity ?? 0) > 10 ? 'text-green-600' : (($result->stock_quantity ?? 0) > 0 ? 'text-orange-500' : 'text-red-600') }} font-semibold">Available: {{ $result->stock_quantity ?? 0 }}</span>
+                                    </p>
+                                </div>
+
+                                <!-- Price -->
+                                <div class="text-right flex-shrink-0">
+                                    <p class="text-sm font-bold text-orange-500">Rs. {{ number_format($result->selling_price, 2) }}</p>
+                                </div>
+                            </div>
+                            @endif
+                            @endforeach
+                            @else
+                            <div class="p-4 text-center text-gray-500">
+                                <p class="text-sm">No products found for "{{ $search }}"</p>
+                            </div>
+                            @endif
+                        </div>
+                        @endif
                     </div>
                 </div>
 
@@ -203,7 +296,7 @@
             </div>
 
             <!-- Right Side: Order/Cart Sidebar (1/3 width) -->
-            <div class="w-1/3 bg-white border-l border-gray-200 flex flex-col shadow-2xl relative z-10">
+            <div class="w-2/5 bg-white border-l border-gray-200 flex flex-col shadow-2xl relative z-10">
                 <!-- Header with Invoice and Customer Selection -->
                 <div class="p-2 border-b border-gray-200">
                     <!-- Invoice and Customer in one row -->
@@ -260,24 +353,41 @@
 
                                 <!-- Price, Quantity, Total Row -->
                                 <div class="flex items-center gap-3 justify-between mt-2">
-                                    <!-- Unit Price (Editable) -->
-                                    <div>
-                                        <label class="text-xs text-gray-500 block mb-0.5">Price</label>
-                                        <div class="flex items-center gap-1">
-                                            <span class="text-xs text-gray-600">Rs.</span>
-                                            <input type="number" wire:model.blur="prices.{{ $id }}" value="{{ $prices[$id] ?? $item['price'] }}" class="w-28 px-2 py-1.5 text-sm font-semibold border border-gray-300 rounded focus:ring-1 focus:ring-blue-500" min="0" step="0.01" />
-                                        </div>
-                                    </div>
 
                                     <!-- Quantity Selector -->
                                     <div>
                                         <label class="text-xs text-gray-500 block mb-0.5">Qty</label>
                                         <div class="flex items-center gap-2 bg-gray-100 rounded px-2 py-1">
                                             <button wire:click="decrementQuantity({{ $id }})" class="text-gray-600 hover:text-gray-900 text-lg font-bold">−</button>
-                                            <input type="number" wire:model.blur="quantities.{{ $id }}" class="w-16 text-sm font-bold text-center bg-transparent border-none focus:outline-none" min="1" />
+                                            <input
+                                                type="number"
+                                                wire:model.blur="quantities.{{ $id }}"
+                                                data-cart-qty="{{ $id }}"
+                                                onkeydown="if(event.key==='Enter'){event.preventDefault();var p=document.querySelector('input[data-cart-price=\'{{ $id }}\']');if(p){p.focus();p.select();}}"
+                                                class="w-16 text-sm font-bold text-center bg-transparent border-none focus:outline-none"
+                                                min="1" />
                                             <button wire:click="incrementQuantity({{ $id }})" class="text-gray-600 hover:text-gray-900 text-lg font-bold">+</button>
                                         </div>
                                     </div>
+
+                                    <!-- Unit Price (Editable) -->
+                                    <div>
+                                        <label class="text-xs text-gray-500 block mb-0.5">Price</label>
+                                        <div class="flex items-center gap-1">
+                                            <span class="text-xs text-gray-600">Rs.</span>
+                                            <input
+                                                type="number"
+                                                wire:model.blur="prices.{{ $id }}"
+                                                value="{{ $prices[$id] ?? $item['price'] }}"
+                                                data-cart-price="{{ $id }}"
+                                                onkeydown="if(event.key==='Enter'){event.preventDefault();var s=document.getElementById('productSearchInput');if(s){s.focus();s.select();}}"
+                                                class="w-28 px-2 py-1.5 text-sm font-semibold border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                                                min="0"
+                                                step="0.01" />
+                                        </div>
+                                    </div>
+
+
 
                                     <!-- Discount Badge -->
                                     @if(isset($discounts[$id]) && $discounts[$id] > 0)
@@ -732,6 +842,88 @@
 
     @push('scripts')
     <script>
+        // Alpine.js Search Navigation Component
+        function searchNavigation() {
+            return {
+                searchFocused: false,
+                highlightedIndex: -1,
+
+                init() {
+                    // Focus search bar on page load
+                    this.$nextTick(() => {
+                        if (this.$refs.searchInput) {
+                            this.$refs.searchInput.focus();
+                        }
+                    });
+                },
+
+                handleGlobalKeydown(event) {
+                    if (event.key === 'F2' || (event.ctrlKey && event.key === 'k')) {
+                        event.preventDefault();
+                        this.focusSearchBar();
+                    }
+                },
+
+                navigateResults(direction) {
+                    const container = this.$refs.searchContainer;
+                    if (!container) return;
+                    const items = container.querySelectorAll('.search-dropdown-item');
+                    const count = items.length;
+                    if (count === 0) return;
+
+                    if (direction === 'down') {
+                        this.highlightedIndex = Math.min(this.highlightedIndex + 1, count - 1);
+                    } else {
+                        this.highlightedIndex = Math.max(this.highlightedIndex - 1, -1);
+                    }
+
+                    if (this.highlightedIndex >= 0 && items[this.highlightedIndex]) {
+                        items[this.highlightedIndex].scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest'
+                        });
+                    }
+                },
+
+                selectHighlightedProduct() {
+                    const container = this.$refs.searchContainer;
+                    if (!container) return;
+                    const items = container.querySelectorAll('.search-dropdown-item');
+                    if (this.highlightedIndex >= 0 && items[this.highlightedIndex]) {
+                        const productId = items[this.highlightedIndex].getAttribute('data-product-id');
+                        if (productId) {
+                            this.$wire.addToCart(parseInt(productId));
+                            this.highlightedIndex = -1;
+                            // Focus qty input after Livewire update
+                            setTimeout(() => {
+                                const qtyInput = document.querySelector(`input[data-cart-qty="${productId}"]`);
+                                if (qtyInput) {
+                                    qtyInput.focus();
+                                    qtyInput.select();
+                                }
+                            }, 300);
+                        }
+                    }
+                },
+
+                focusNextPrice(productId) {
+                    const priceInput = document.querySelector(`input[data-cart-price="${productId}"]`);
+                    if (priceInput) {
+                        priceInput.focus();
+                        priceInput.select();
+                    }
+                },
+
+                focusSearchBar() {
+                    if (this.$refs.searchInput) {
+                        this.$refs.searchInput.focus();
+                        this.$refs.searchInput.select();
+                        this.highlightedIndex = -1;
+                    }
+                }
+            }
+        }
+
         document.addEventListener('livewire:initialized', () => {
             // Modal listeners
             window.addEventListener('showModal', event => {
@@ -806,6 +998,17 @@
                 const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
                 paymentModal.show();
             });
+
+            // Receipt Modal - Refresh page when closed
+            const receiptModalEl = document.getElementById('receiptModal');
+            if (receiptModalEl) {
+                receiptModalEl.addEventListener('hide.bs.modal', function() {
+                    // Reload the page after a short delay to allow modal to fully close
+                    setTimeout(() => {
+                        location.reload();
+                    }, 300);
+                });
+            }
         });
 
         function printSalesReceipt() {
