@@ -70,8 +70,9 @@ class Products extends Component
 
     public function mount()
     {
-        $this->categories = ProductCategory::all();
-        $this->brands = brand::all();
+        $this->categories = ProductCategory::orderBy('name')->get();
+        $this->brands = brand::orderBy('brand_name')->get();
+        $this->loadFieldKeys();
 
         // dd($this->brands);
     }
