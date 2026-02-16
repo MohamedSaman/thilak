@@ -795,6 +795,12 @@
                         <i class="bi bi-cash"></i> <span>Billing</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link py-2 {{ request()->routeIs('admin.reports') ? 'active' : '' }}"
+                        href="{{ route('admin.reports') }}">
+                        <i class="bi bi-graph-up"></i> <span>Reports</span>
+                    </a>
+                </li>
 
             </ul>
         </div>

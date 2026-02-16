@@ -33,6 +33,11 @@
                     style="background-color: #233D7F; border-color: #233D7F; color: white;transition: all 0.3s ease; hover: transform: scale(1.05)">
                     <i class="bi bi-download me-1" aria-hidden="true"></i> Export CSV
                 </button>
+                <button wire:click="exportPDF"
+                    class="btn btn-danger rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
+                    aria-label="Export stock details to PDF">
+                    <i class="bi bi-file-earmark-pdf me-1" aria-hidden="true"></i> Export PDF
+                </button>
                 <button id="printButton"
                     class="btn text-white rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
                     aria-label="Print stock details"
@@ -423,7 +428,7 @@
                     <small>Generated on ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Colombo' })}</small><br>
                     <p>THILAK HARDWARE</p><br>
                     <small> for <br> MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</small><br>
-                    <small>NO. 397/, DUNU ELA, THIHARIYA, KALAGEDIHENA | Phone: 077 6718838</small>
+                    <small>NO. 397/, DUNU ELA, THIHARIYA, KALAGEDIHENA | Phone: 077 9089961</small>
                 </div>
             </div>
         </body>

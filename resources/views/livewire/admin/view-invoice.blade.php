@@ -107,6 +107,12 @@
                         aria-label="Search by invoice number or customer">
                 </div>
                 <div class="d-flex align-items-center gap-2">
+                    <button wire:click="exportCSV" class="btn btn-success btn-sm rounded-pill shadow-sm px-3 py-2">
+                        <i class="bi bi-file-earmark-spreadsheet me-1"></i> CSV
+                    </button>
+                    <button wire:click="exportPDF" class="btn btn-danger btn-sm rounded-pill shadow-sm px-3 py-2">
+                        <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                    </button>
                     <div class="dropdown">
                         <button class="btn btn-light rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
                             type="button" id="filterDropdown" data-bs-toggle="dropdown"

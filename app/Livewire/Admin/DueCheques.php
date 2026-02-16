@@ -189,13 +189,78 @@ class DueCheques extends Component
         $this->dispatch('print-due-cheque-payments');
     }
 
+    public function exportCSV()
+    {
+        $query = Cheque::with(['customer', 'payment.sale'])
+            ->where('customer_id', '!=', null);
+
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->whereHas('payment.sale', function ($q2) {
+                    $q2->where('invoice_number', 'like', "%{$this->search}%");
+                })->orWhereHas('customer', function ($q2) {
+                    $q2->where('name', 'like', "%{$this->search}%");
+                });
+            });
+        }
+
+        if ($this->filters['dateRange']) {
+            [$startDate, $endDate] = explode(' to ', $this->filters['dateRange']);
+            $query->whereBetween('cheque_date', [$startDate, $endDate]);
+        }
+
+        $cheques = $query->orderBy('cheque_date', 'desc')->get();
+        $filename = 'cheques_' . now()->format('Y-m-d_His') . '.csv';
+
+        return response()->streamDownload(function () use ($cheques) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['Cheque #', 'Date', 'Bank', 'Amount', 'Customer', 'Invoice #', 'Status']);
+            foreach ($cheques as $cheque) {
+                fputcsv($handle, [
+                    $cheque->cheque_number,
+                    $cheque->cheque_date->format('Y-m-d'),
+                    $cheque->bank_name,
+                    number_format($cheque->cheque_amount, 2),
+                    $cheque->customer ? $cheque->customer->name : '-',
+                    $cheque->payment && $cheque->payment->sale ? $cheque->payment->sale->invoice_number : '-',
+                    ucfirst($cheque->status ?? 'pending'),
+                ]);
+            }
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
+    }
+
+    public function exportPDF()
+    {
+        $query = Cheque::with(['customer', 'payment.sale'])
+            ->where('customer_id', '!=', null);
+
+        if ($this->filters['dateRange']) {
+            [$startDate, $endDate] = explode(' to ', $this->filters['dateRange']);
+            $query->whereBetween('cheque_date', [$startDate, $endDate]);
+        }
+
+        $data = $query->orderBy('cheque_date', 'desc')->get();
+        $reportType = 'cheque_status';
+        $reportTitle = 'Cheque Details Report';
+        $dateFrom = 'All';
+        $dateTo = 'All';
+        $stats = [
+            'totalRevenue' => $data->where('status', 'complete')->sum('cheque_amount'),
+            'totalSalesCount' => $data->count(),
+            'totalDue' => $data->where('status', 'pending')->sum('cheque_amount'),
+            'totalProfit' => $data->where('status', 'return')->sum('cheque_amount'),
+        ];
+
+        $pdf = \PDF::loadView('reports.pdf', compact('data', 'reportType', 'reportTitle', 'dateFrom', 'dateTo', 'stats'));
+        $pdf->setPaper('a4', 'landscape');
+        return response()->streamDownload(fn() => print($pdf->output()), 'cheques_' . now()->format('Y-m-d_His') . '.pdf', ['Content-Type' => 'application/pdf']);
+    }
+
     public function render()
     {
         $baseQuery = Cheque::with(['customer', 'payment.sale'])
-            ->where('customer_id', '!=', null)
-            ->whereHas('payment.sale', function ($query) {
-                $query->where('user_id', auth()->id());
-            });
+            ->where('customer_id', '!=', null);
 
         $filteredQuery = clone $baseQuery;
 

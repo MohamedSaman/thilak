@@ -31,6 +31,7 @@ use App\Livewire\Admin\DueCheques;
 use App\Livewire\Admin\Products;
 use App\Livewire\Admin\DueChequesReturn;
 use App\Livewire\Admin\ViewInvoice;
+use App\Livewire\Admin\Reports;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,7 +67,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/staff-due-details', StaffDueDetails::class)->name('staff-due-details');
         Route::get('/customer-sale-details', CustomerSaleDetails::class)->name('customer-sale-details');
         Route::get('/view-payments', ViewPayments::class)->name('view-payments');
-        Route::get('/admin/staff/{staffId}/reentry', \App\Livewire\Admin\StockReentry::class)->name('staff.reentry');
+        Route::get('/staff/{staffId}/reentry', \App\Livewire\Admin\StockReentry::class)->name('staff.reentry');
         // Route::get('/store-billing', [StoreBilling::class, 'index'])->name('store-billing');
         Route::get('/store-billing', StoreBilling::class)->name('store-billing');
         Route::get('/due-payments', AdminDuePayments::class)->name('due-payments');
@@ -78,6 +79,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/product-stocks', \App\Livewire\Admin\ProductStocks::class)->name('product-stocks');
         Route::get('/brands', \App\Livewire\Admin\Brands::class)->name('brands');
         Route::get('/view-invoice', ViewInvoice::class)->name('view-invoice');
+        Route::get('/reports', Reports::class)->name('reports');
     });
 
 

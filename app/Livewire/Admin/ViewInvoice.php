@@ -94,12 +94,11 @@ class ViewInvoice extends Component
         return redirect()->route('admin.store-billing')->with('editSaleId', $saleId);
     }
 
-    public function render()
+    private function getFilteredQuery()
     {
         $query = Sale::with(['customer', 'user', 'items'])
             ->orderBy('created_at', 'desc');
 
-        // Search filter
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('invoice_number', 'like', '%' . $this->search . '%')
@@ -110,26 +109,73 @@ class ViewInvoice extends Component
             });
         }
 
-        // Date filters
         if ($this->dateFrom) {
             $query->whereDate('created_at', '>=', $this->dateFrom);
         }
-
         if ($this->dateTo) {
             $query->whereDate('created_at', '<=', $this->dateTo);
         }
-
-        // Payment type filter
         if ($this->paymentType) {
             $query->where('payment_type', $this->paymentType);
         }
-
-        // Customer type filter
         if ($this->customerType) {
             $query->whereHas('customer', function ($q) {
-                $q->where('customer_type', $this->customerType);
+                $q->where('type', $this->customerType);
             });
         }
+
+        return $query;
+    }
+
+    public function exportCSV()
+    {
+        $sales = $this->getFilteredQuery()->get();
+        $filename = 'invoices_' . now()->format('Y-m-d_His') . '.csv';
+
+        return response()->streamDownload(function () use ($sales) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['Invoice #', 'Date', 'Customer', 'Type', 'Subtotal', 'Discount', 'Total', 'Due', 'Payment Type', 'Status']);
+            foreach ($sales as $sale) {
+                fputcsv($handle, [
+                    $sale->invoice_number,
+                    $sale->created_at->format('Y-m-d H:i'),
+                    $sale->customer ? $sale->customer->name : 'Walk-in',
+                    $sale->customer_type,
+                    number_format($sale->subtotal, 2),
+                    number_format($sale->discount_amount, 2),
+                    number_format($sale->total_amount, 2),
+                    number_format($sale->due_amount, 2),
+                    $sale->payment_type,
+                    $sale->payment_status,
+                ]);
+            }
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
+    }
+
+    public function exportPDF()
+    {
+        $sales = $this->getFilteredQuery()->get();
+        $data = $sales;
+        $reportType = 'daily_sales';
+        $reportTitle = 'Invoices Report';
+        $dateFrom = $this->dateFrom ?: 'All';
+        $dateTo = $this->dateTo ?: 'All';
+        $stats = [
+            'totalRevenue' => $sales->sum('total_amount'),
+            'totalSalesCount' => $sales->count(),
+            'totalDue' => $sales->sum('due_amount'),
+            'totalProfit' => $sales->sum('total_amount') - $sales->sum('discount_amount'),
+        ];
+
+        $pdf = \PDF::loadView('reports.pdf', compact('data', 'reportType', 'reportTitle', 'dateFrom', 'dateTo', 'stats'));
+        $pdf->setPaper('a4', 'landscape');
+        return response()->streamDownload(fn() => print($pdf->output()), 'invoices_' . now()->format('Y-m-d_His') . '.pdf', ['Content-Type' => 'application/pdf']);
+    }
+
+    public function render()
+    {
+        $query = $this->getFilteredQuery();
 
         $sales = $query->paginate(15);
 

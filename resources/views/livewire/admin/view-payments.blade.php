@@ -107,6 +107,12 @@
                             aria-label="Search invoices or customers">
                     </div>
                     <div class="d-flex align-items-center gap-2">
+                        <button wire:click="exportCSV" class="btn btn-success btn-sm rounded-pill shadow-sm px-3 py-2">
+                            <i class="bi bi-file-earmark-spreadsheet me-1"></i> CSV
+                        </button>
+                        <button wire:click="exportPDF" class="btn btn-danger btn-sm rounded-pill shadow-sm px-3 py-2">
+                            <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                        </button>
                         <div class="dropdown">
                             <button class="btn btn-light rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
                                 type="button" id="filterDropdown" data-bs-toggle="dropdown"
@@ -269,7 +275,7 @@
                         <div class="text-center mb-4">
                             <h3 class="mb-0">THILAK HARDWARE </h3>
                             <p class="mb-0 text-muted small"> for <br> <span class="text-denger "> MARUTI-LEYLAND - MAHINDRA-TATA-ALTO </span></p>
-                            <p class="mb-0 text-muted small">Phone: 077 6718838 | Address: No. 397/3, Dunu Ela, Thihariya, Kalagedihena.</p>
+                            <p class="mb-0 text-muted small">Phone: 077 9089961 | Address: NO 569/17A, THIHARIYA, KALAGEDIHENA.</p>
                             <h4 class="mt-3 border-bottom border-2 pb-2">PAYMENT RECEIPT</h4>
                         </div>
 
@@ -433,7 +439,7 @@
         }
 
         .card-header {
-            
+
             border-radius: 1rem 1rem 0 0;
             border: none;
         }

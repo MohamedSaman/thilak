@@ -82,7 +82,7 @@ class Category extends Component
 
         $this->showEditModal = false;
         $this->reset(['name', 'description', 'editingCategoryId']);
-        $this->js('swal.fire("Success", Category updated successfully!", "success")');
+        $this->js('swal.fire("Success", "Category updated successfully!", "success")');
     }
 
     public function delete()
@@ -93,6 +93,30 @@ class Category extends Component
         $this->showDeleteModal = false;
         $this->deletingCategoryId = null;
         $this->js('swal.fire("Success", "Category deleted successfully!", "success")');
+    }
+
+    public function exportCSV()
+    {
+        $categories = ProductCategory::query()
+            ->where('name', 'like', '%' . $this->search . '%')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $filename = 'categories_' . now()->format('Y-m-d_His') . '.csv';
+
+        return response()->streamDownload(function () use ($categories) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['ID', 'Name', 'Description', 'Created At']);
+            foreach ($categories as $cat) {
+                fputcsv($handle, [
+                    $cat->id,
+                    $cat->name,
+                    $cat->description ?? '-',
+                    $cat->created_at->format('Y-m-d H:i'),
+                ]);
+            }
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
     }
 
     public function render()

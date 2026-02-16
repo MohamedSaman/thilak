@@ -76,8 +76,8 @@ class Brands extends Component
 
         $brands = brand::findOrFail($this->editingBrandId);
         $brands->update([
-            'name' => $this->brand_name,
-            'description' => $this->notes,
+            'brand_name' => $this->brand_name,
+            'notes' => $this->notes,
         ]);
 
         $this->showEditModal = false;
@@ -94,6 +94,31 @@ class Brands extends Component
         $this->deletingBrandId = null;
         $this->js('swal.fire("Success", "Brand deleted successfully", "success")');
     }
+
+    public function exportCSV()
+    {
+        $brands = brand::query()
+            ->where('brand_name', 'like', '%' . $this->search . '%')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $filename = 'brands_' . now()->format('Y-m-d_His') . '.csv';
+
+        return response()->streamDownload(function () use ($brands) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['ID', 'Brand Name', 'Notes', 'Created At']);
+            foreach ($brands as $brand) {
+                fputcsv($handle, [
+                    $brand->id,
+                    $brand->brand_name,
+                    $brand->notes ?? '-',
+                    $brand->created_at->format('Y-m-d H:i'),
+                ]);
+            }
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
+    }
+
     public function render()
     {
         $brands = brand::query()

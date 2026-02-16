@@ -41,13 +41,17 @@
 
         <!-- Right: Buttons -->
         <div class="d-flex gap-2 flex-shrink-0 justify-content-lg-end">
+            <button wire:click="exportCSV"
+                class="btn btn-success rounded-full px-3 fw-medium transition-all hover:shadow"
+                style="transition: all 0.3s ease;">
+                <i class="bi bi-file-earmark-spreadsheet me-1"></i> CSV
+            </button>
             <button
                 class="btn btn-primary rounded-full px-4 fw-medium transition-all hover:shadow w-100"
                 wire:click="toggleAddModal"
                 style="background-color: #233D7F; border-color: #233D7F; color: white;transition: all 0.3s ease; hover: transform: scale(1.05)">
                 <i class="bi bi-plus-circle me-2"></i>Add Brand
             </button>
-
         </div>
     </div>
 

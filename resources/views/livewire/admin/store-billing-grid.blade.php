@@ -217,7 +217,7 @@
                                 <!-- Price -->
                                 <div class="text-right flex-shrink-0">
                                     @if($result->mrp_price)
-                                    <p class="text-xs text-gray-400 line-through">MRP: Rs. {{ number_format($result->mrp_price, 2) }}</p>
+                                    <p class="text-xs line-through">MRP: Rs. {{ number_format($result->mrp_price, 2) }}</p>
                                     @endif
                                     <p class="text-sm font-bold text-orange-500">Rs. {{ number_format($result->selling_price, 2) }}</p>
                                 </div>
@@ -277,7 +277,7 @@
                                     <div class="flex items-center justify-between mb-1">
                                         <div>
                                             @if($result->mrp_price)
-                                            <p class="text-xs text-gray-400 line-through">MRP: Rs {{ number_format($result->mrp_price, 2) }}</p>
+                                            <p class="text-xs line-through">MRP: Rs {{ number_format($result->mrp_price, 2) }}</p>
                                             @endif
                                             <p class="text-lg font-bold text-blue-600">Rs {{ number_format($result->selling_price, 2) }}</p>
                                         </div>
@@ -356,7 +356,7 @@
                                     <div class="flex-1">
                                         <h5 class="text-sm font-bold text-gray-900 truncate">{{ $item['name'] }}</h5>
                                         @if(isset($item['mrp_price']) && $item['mrp_price'])
-                                        <p class="text-xs text-gray-400">MRP: Rs. {{ number_format($item['mrp_price'], 2) }}</p>
+                                        <p class="text-xs">MRP: Rs. {{ number_format($item['mrp_price'], 2) }}</p>
                                         @endif
                                     </div>
                                     <button wire:click="removeFromCart({{ $id }})" class="text-gray-400 hover:text-red-500 p-0 flex-shrink-0">
@@ -1108,7 +1108,7 @@
                         <div>
                             <div class="company-name">THILAK HARDWARE</div>
                             <div class="company-address"></div>
-                            <div class="company-address">Phone: 077 6718838</div>
+                            <div class="company-address">Phone: 077 9089961</div>
                             <div class="dashed"></div>
 
                             <table>
@@ -1126,8 +1126,6 @@
                             <div class="dashed"></div>
                             <div class="footer">
                                 <div>*****ORIGINAL*****</div>
-                                <div>Please draw the cheque in favor of M.A.Z Ahamed</div>
-                                <div>Peoples Bank Acc No: 2781-0010-2421-207</div>
                             </div>
                         </div>
                     </body>

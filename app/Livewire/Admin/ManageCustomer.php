@@ -182,6 +182,30 @@ class ManageCustomer extends Component
         return response()->stream($callback, 200, $headers);
     }
 
+    public function exportPDF()
+    {
+        $customers = Customer::withCount('sales')
+            ->withSum('sales', 'total_amount')
+            ->withSum('sales', 'due_amount')
+            ->get();
+
+        $data = $customers;
+        $reportType = 'customer_ledger';
+        $reportTitle = 'Customers Report';
+        $dateFrom = 'All';
+        $dateTo = 'All';
+        $stats = [
+            'totalRevenue' => $customers->sum('sales_sum_total_amount'),
+            'totalSalesCount' => $customers->count(),
+            'totalDue' => $customers->sum('sales_sum_due_amount'),
+            'totalProfit' => 0,
+        ];
+
+        $pdf = \PDF::loadView('reports.pdf', compact('data', 'reportType', 'reportTitle', 'dateFrom', 'dateTo', 'stats'));
+        $pdf->setPaper('a4', 'landscape');
+        return response()->streamDownload(fn() => print($pdf->output()), 'customers_' . now()->format('Y-m-d_His') . '.pdf', ['Content-Type' => 'application/pdf']);
+    }
+
     public function importCustomers()
     {
         $this->reset('importFile');

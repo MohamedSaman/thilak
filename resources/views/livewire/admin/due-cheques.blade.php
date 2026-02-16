@@ -158,6 +158,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <button wire:click="exportCSV"
+                                class="btn btn-success rounded-full shadow-sm px-3 py-2">
+                                <i class="bi bi-file-earmark-spreadsheet me-1"></i> CSV
+                            </button>
+                            <button wire:click="exportPDF"
+                                class="btn btn-danger rounded-full shadow-sm px-3 py-2">
+                                <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                            </button>
                             <button wire:click="printDueChequePayments"
                                 class="btn btn-light rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
                                 aria-label="Print due cheque payments">
@@ -555,7 +563,7 @@
         box-shadow: 0 4px 15px rgba(35, 61, 127, 0.1);
     }
 
-    .card-header { 
+    .card-header {
         border-radius: 1rem 1rem 0 0;
         border: none;
     }
@@ -963,7 +971,7 @@
                         </div>
                         <div class="print-footer">
                             <small>Generated on ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Colombo' })}</small><br>
-                            <small>(THILAK HARDWARE) | No. 397/3, Dunu Ela, Thihariya, Kalagedihena. | Phone: 077 6718838</small>
+                            <small>(THILAK HARDWARE) | NO 569/17A, THIHARIYA, KALAGEDIHENA. | Phone: 077 9089961</small>
                         </div>
                     </div>
                 </body>

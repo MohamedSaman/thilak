@@ -44,6 +44,11 @@
                     style="color: #fff; background-color: #233D7F; border: 1px solid #233D7F;">
                     <i class="bi bi-download me-1" aria-hidden="true"></i> Export CSV
                 </button>
+                <button wire:click="exportPDF"
+                    class="btn btn-danger rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
+                    aria-label="Export customers to PDF">
+                    <i class="bi bi-file-earmark-pdf me-1" aria-hidden="true"></i> Export PDF
+                </button>
                 <button wire:click="importCustomers"
                     class="btn btn-light rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
                     aria-label="Import stock details from CSV"

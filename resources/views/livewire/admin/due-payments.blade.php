@@ -171,6 +171,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <button wire:click="exportCSV"
+                                class="btn btn-success rounded-full shadow-sm px-3 py-2">
+                                <i class="bi bi-file-earmark-spreadsheet me-1"></i> CSV
+                            </button>
+                            <button wire:click="exportPDF"
+                                class="btn btn-danger rounded-full shadow-sm px-3 py-2">
+                                <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                            </button>
                             <button wire:click="printDuePayments"
                                 class="btn btn-light rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
                                 aria-label="Print due payments">
@@ -603,7 +611,7 @@
     }
 
     .card-header {
-        
+
         border-radius: 1rem 1rem 0 0;
         border: none;
     }
@@ -1039,7 +1047,7 @@
                             <small>Generated on ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Colombo' })}</small><br>
                             <p>THILAK HARDWARE</p>
                             <small> for <br> MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</small><br>
-                            <small>NO. 397/, DUNU ELA, THIHARIYA, KALAGEDIHENA | Phone: 077 6718838</small>
+                            <small>NO. 397/, DUNU ELA, THIHARIYA, KALAGEDIHENA | Phone: 077 9089961</small>
                             <div class="no-print" style="margin-top: 15px;">
                                 <a href="#" class="btn-light" onclick="window.print(); return false;">Print</a>
                                 <a href="#" class="btn-light" style="margin-left: 10px;" onclick="window.close(); return false;">Close</a>

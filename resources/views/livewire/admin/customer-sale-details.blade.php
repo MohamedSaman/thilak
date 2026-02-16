@@ -67,13 +67,13 @@
                     <tbody>
                         @forelse($customerSales as $index => $customer)
                         <tr class="transition-all hover:bg-gray-50">
-                            <td class="text-sm text-center  ps-4 py-3" >
+                            <td class="text-sm text-center  ps-4 py-3">
                                 {{ $customerSales->firstItem() + $index }}
                             </td>
                             <td class="text-sm text-center py-3" data-label="Customer Name">{{ $customer->name }}</td>
-                            <td class="text-sm text-center py-3" >{{ $customer->invoice_count }}</td>
+                            <td class="text-sm text-center py-3">{{ $customer->invoice_count }}</td>
                             <td class="text-sm text-center py-3 text-gray-800" data-label="Total Sales">Rs.{{ number_format($customer->total_sales, 2) }}</td>
-                            
+
                             <td class="text-sm text-center py-3">
                                 <span class="badge"
                                     style="background-color: {{ $customer->received_cheque_amount > 0 ? '#f59e0b' : '#6b7280' }};
@@ -280,23 +280,23 @@
                                             </td>
                                             <td class="text-sm text-gray-600 text-center" data-label="Date">
                                                 @if($item['type'] !== 'total' && $item['type'] !== 'due')
-                                                    {{ $item['date'] ? \Carbon\Carbon::parse($item['date'])->format('d M Y') : '-' }}
+                                                {{ $item['date'] ? \Carbon\Carbon::parse($item['date'])->format('d M Y') : '-' }}
                                                 @endif
                                             </td>
                                             <td class="text-end text-sm {{ $item['sales_amount'] > 0 && $item['type'] !== 'due' ? 'text-gray-800 fw-bold' : 'text-gray-400' }}" data-label="Sales Amount">
                                                 @if($item['sales_amount'] > 0 && $item['type'] !== 'due')
-                                                    Rs.{{ number_format($item['sales_amount'], 2) }}
+                                                Rs.{{ number_format($item['sales_amount'], 2) }}
                                                 @else
-                                                    
+
                                                 @endif
                                             </td>
                                             <td class="text-end text-sm {{ $item['received_amount'] > 0 || $item['type'] === 'due' ? 'text-gray-800 fw-bold' : 'text-gray-400' }}" data-label="Received Amount">
                                                 @if($item['type'] === 'due' && $item['sales_amount'] > 0)
-                                                    <span style="color: #ef4444;">Rs.{{ number_format($item['sales_amount'], 2) }}</span>
+                                                <span style="color: #ef4444;">Rs.{{ number_format($item['sales_amount'], 2) }}</span>
                                                 @elseif($item['received_amount'] > 0)
-                                                    Rs.{{ number_format($item['received_amount'], 2) }}
+                                                Rs.{{ number_format($item['received_amount'], 2) }}
                                                 @else
-                                                    
+
                                                 @endif
                                             </td>
                                         </tr>
@@ -346,7 +346,8 @@
 @endpush
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script><script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
     // Toast notifications for Livewire events
     document.addEventListener('livewire:initialized', () => {
         @this.on('showToast', ({
@@ -532,7 +533,7 @@
                             ${clonedTable.outerHTML}
                         </div>
                         <div class="print-footer">
-                            <p>THILAK HARDWARE | No. 397/3, Dunu Ela, Thihariya, Kalagedihena. | Phone: 077 6718838</p>
+                            <p>THILAK HARDWARE | NO 569/17A, THIHARIYA, KALAGEDIHENA. | Phone: 077 9089961</p>
                         </div>
                     </div>
                 </body>
@@ -683,7 +684,7 @@
                     ${table.outerHTML}
                 </div>
                 <div class="print-footer">
-                    <p>THILAK HARDWARE | No. 397/3, Dunu Ela, Thihariya, Kalagedihena. | Phone: 077 6718838</p>
+                    <p>THILAK HARDWARE | NO 569/17A, THIHARIYA, KALAGEDIHENA. | Phone: 077 9089961</p>
                 </div>
             </body>
             </html>

@@ -59,13 +59,11 @@ class ViewPayments extends Component
         $this->reset('filters');
     }
 
-    public function render()
+    private function getFilteredQuery()
     {
-
-
-        $query = Payment::query()
+        return Payment::query()
             ->with(['sale', 'sale.customer', 'sale.user'])
-            ->where('status', 'Paid') // Force only Paid status
+            ->where('status', 'Paid')
             ->when($this->search, function ($q) {
                 return $q->whereHas('sale', function ($sq) {
                     $sq->where('invoice_number', 'like', "%{$this->search}%")
@@ -77,9 +75,58 @@ class ViewPayments extends Component
             })
             ->when($this->filters['paymentMethod'], function ($q) {
                 return $q->where('payment_method', $this->filters['paymentMethod']);
-            });
+            })
+            ->orderBy('created_at', 'desc');
+    }
 
-        $payments = $query->orderBy('created_at', 'desc')->paginate(15);
+    public function exportCSV()
+    {
+        $payments = $this->getFilteredQuery()->get();
+        $filename = 'payments_' . now()->format('Y-m-d_His') . '.csv';
+
+        return response()->streamDownload(function () use ($payments) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['Date', 'Invoice #', 'Customer', 'Method', 'Amount', 'Status', 'Reference']);
+            foreach ($payments as $payment) {
+                fputcsv($handle, [
+                    $payment->created_at->format('Y-m-d H:i'),
+                    $payment->sale ? $payment->sale->invoice_number : '-',
+                    $payment->sale && $payment->sale->customer ? $payment->sale->customer->name : 'Walk-in',
+                    ucfirst($payment->payment_method ?? 'N/A'),
+                    number_format($payment->amount, 2),
+                    $payment->is_completed ? 'Completed' : 'Pending',
+                    $payment->payment_reference ?? '-',
+                ]);
+            }
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
+    }
+
+    public function exportPDF()
+    {
+        $payments = $this->getFilteredQuery()->get();
+        $data = $payments;
+        $reportType = 'payment_summary';
+        $reportTitle = 'Payments Report';
+        $dateFrom = 'All';
+        $dateTo = 'All';
+        $stats = [
+            'totalRevenue' => $payments->sum('amount'),
+            'totalSalesCount' => $payments->count(),
+            'totalDue' => $payments->where('is_completed', false)->sum('amount'),
+            'totalProfit' => 0,
+        ];
+
+        $pdf = \PDF::loadView('reports.pdf', compact('data', 'reportType', 'reportTitle', 'dateFrom', 'dateTo', 'stats'));
+        $pdf->setPaper('a4', 'landscape');
+        return response()->streamDownload(fn() => print($pdf->output()), 'payments_' . now()->format('Y-m-d_His') . '.pdf', ['Content-Type' => 'application/pdf']);
+    }
+
+    public function render()
+    {
+        $query = $this->getFilteredQuery();
+
+        $payments = $query->paginate(15);
 
         // Get summary stats
         $totalPayments = Payment::where('is_completed', 1)->sum('amount');

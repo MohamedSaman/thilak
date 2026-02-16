@@ -19,32 +19,70 @@ class ProductStocks extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $search = '';
-    
-    // public function exportToCSV()
-    // {
-    //     try {
-    //         return Excel::download(new ProductsExport, 'product_stocks_' . now()->format('Y-m-d_H-i-s') . '.csv');
-    //     } catch (\Exception $e) {
-    //         $this->dispatch('showToast', [
-    //             'type' => 'error',
-    //             'message' => 'Failed to export: ' . $e->getMessage()
-    //         ]);
-    //     }
-    // }
 
-    public function render()
+    private function getFilteredQuery()
     {
-        $query = ProductDetail::query()
-            ->with(['category'])
+        return ProductDetail::query()
+            ->with(['category', 'brand'])
             ->where(function ($query) {
                 $query->where('product_name', 'like', "%{$this->search}%")
                     ->orWhere('product_code', 'like', "%{$this->search}%")
                     ->orWhereHas('category', function ($q) {
                         $q->where('name', 'like', "%{$this->search}%");
                     });
-            });
+            })
+            ->orderBy('product_name');
+    }
 
-        $products = $query->orderBy('product_name')->paginate(10);
+    public function exportToCSV()
+    {
+        $products = $this->getFilteredQuery()->get();
+        $filename = 'product_stocks_' . now()->format('Y-m-d_His') . '.csv';
+
+        return response()->streamDownload(function () use ($products) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['Code', 'Product Name', 'Category', 'Brand', 'Stock Qty', 'Damage Qty', 'Sold', 'Supplier Price', 'Selling Price', 'Status']);
+            foreach ($products as $product) {
+                fputcsv($handle, [
+                    $product->product_code,
+                    $product->product_name,
+                    $product->category ? $product->category->name : '-',
+                    $product->brand ? $product->brand->brand_name : '-',
+                    $product->stock_quantity,
+                    $product->damage_quantity ?? 0,
+                    $product->sold ?? 0,
+                    number_format($product->supplier_price, 2),
+                    number_format($product->selling_price, 2),
+                    $product->status,
+                ]);
+            }
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
+    }
+
+    public function exportPDF()
+    {
+        $products = $this->getFilteredQuery()->get();
+        $data = $products;
+        $reportType = 'stock_alert';
+        $reportTitle = 'Product Stock Report';
+        $dateFrom = 'All';
+        $dateTo = 'All';
+        $stats = [
+            'totalRevenue' => $products->where('stock_quantity', '<=', 0)->count(),
+            'totalSalesCount' => $products->count(),
+            'totalDue' => 0,
+            'totalProfit' => 0,
+        ];
+
+        $pdf = \PDF::loadView('reports.pdf', compact('data', 'reportType', 'reportTitle', 'dateFrom', 'dateTo', 'stats'));
+        $pdf->setPaper('a4', 'landscape');
+        return response()->streamDownload(fn() => print($pdf->output()), 'product_stocks_' . now()->format('Y-m-d_His') . '.pdf', ['Content-Type' => 'application/pdf']);
+    }
+
+    public function render()
+    {
+        $products = $this->getFilteredQuery()->paginate(10);
         // $hasStock = $products->sum(function ($product) {
         //     return $product->sold + $product->available + $product->damage;
         // }) > 0;

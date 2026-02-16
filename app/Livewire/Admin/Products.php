@@ -5,12 +5,13 @@ namespace App\Livewire\Admin;
 use App\Models\brand;
 use App\Models\ProductCategory;
 use App\Models\ProductDetail;
+use App\Models\SalesItem;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
-use TheSeer\Tokenizer\Exception;
+use Exception;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 #[Layout('components.layouts.admin')]
@@ -310,6 +311,20 @@ class Products extends Component
 
     public function delete()
     {
+        // Check if product is used in any sales (SalesItem records)
+        $usedInSales = SalesItem::where('product_id', $this->deletingProductId)->exists();
+
+        if ($usedInSales) {
+            // Product is used in sales, prevent deletion
+            $this->showDeleteModal = false;
+            $this->deletingProductId = null;
+            $this->deletingProductName = '';
+
+            $this->js('swal.fire("Cannot Delete", "This product cannot be deleted because it has been used in sales transactions. Products with sale history cannot be removed for record-keeping purposes.", "error")');
+            return;
+        }
+
+        // Product is not used in sales, proceed with deletion
         $product = ProductDetail::findOrFail($this->deletingProductId);
         $product->delete();
 
@@ -417,11 +432,34 @@ class Products extends Component
 
         return response()->stream($callback, 200, $headers);
     }
+
+    public function exportPDF()
+    {
+        $products = ProductDetail::with(['category', 'brand'])->get();
+        $data = $products;
+        $reportType = 'stock_alert';
+        $reportTitle = 'Products Report';
+        $dateFrom = 'All';
+        $dateTo = 'All';
+        $stats = [
+            'totalRevenue' => $products->where('stock_quantity', '<=', 0)->count(),
+            'totalSalesCount' => $products->count(),
+            'totalDue' => 0,
+            'totalProfit' => 0,
+        ];
+
+        $pdf = \PDF::loadView('reports.pdf', compact('data', 'reportType', 'reportTitle', 'dateFrom', 'dateTo', 'stats'));
+        $pdf->setPaper('a4', 'landscape');
+        return response()->streamDownload(fn() => print($pdf->output()), 'products_' . now()->format('Y-m-d_His') . '.pdf', ['Content-Type' => 'application/pdf']);
+    }
+
     public function render()
     {
         $products = ProductDetail::with('category')
-            ->where('product_code', 'like', '%' . $this->search . '%')
-            ->orWhere('product_name', 'like', '%' . $this->search . '%')
+            ->where(function ($query) {
+                $query->where('product_code', 'like', '%' . $this->search . '%')
+                    ->orWhere('product_name', 'like', '%' . $this->search . '%');
+            })
             ->orderBy('created_at', 'asc')
             ->paginate(10);
 

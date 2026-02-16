@@ -303,13 +303,77 @@ class DuePayments extends Component
         $this->dispatch('print-due-payments');
     }
 
+    public function exportCSV()
+    {
+        $salesQuery = Sale::where('due_amount', '>', 0)
+            ->with(['customer']);
+
+        if (!empty($this->search)) {
+            $salesQuery->where(function ($q) {
+                $q->where('invoice_number', 'like', '%' . $this->search . '%')
+                    ->orWhereHas('customer', function ($customerQuery) {
+                        $customerQuery->where('name', 'like', '%' . $this->search . '%')
+                            ->orWhere('phone', 'like', '%' . $this->search . '%');
+                    });
+            });
+        }
+
+        $sales = $salesQuery->orderBy('created_at', 'desc')->get();
+        $filename = 'due_payments_' . now()->format('Y-m-d_His') . '.csv';
+
+        return response()->streamDownload(function () use ($sales) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['Invoice #', 'Date', 'Customer', 'Phone', 'Total Amount', 'Due Amount', 'Payment Type', 'Status']);
+            foreach ($sales as $sale) {
+                fputcsv($handle, [
+                    $sale->invoice_number,
+                    $sale->created_at->format('Y-m-d H:i'),
+                    $sale->customer ? $sale->customer->name : 'Walk-in',
+                    $sale->customer ? $sale->customer->phone : '-',
+                    number_format($sale->total_amount, 2),
+                    number_format($sale->due_amount, 2),
+                    $sale->payment_type,
+                    $sale->payment_status,
+                ]);
+            }
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
+    }
+
+    public function exportPDF()
+    {
+        $salesQuery = Sale::where('due_amount', '>', 0)->with(['customer']);
+        if (!empty($this->search)) {
+            $salesQuery->where(function ($q) {
+                $q->where('invoice_number', 'like', '%' . $this->search . '%')
+                    ->orWhereHas('customer', function ($customerQuery) {
+                        $customerQuery->where('name', 'like', '%' . $this->search . '%');
+                    });
+            });
+        }
+        $data = $salesQuery->orderBy('created_at', 'desc')->get();
+        $reportType = 'outstanding_dues';
+        $reportTitle = 'Due Payments Report';
+        $dateFrom = 'All';
+        $dateTo = 'All';
+        $stats = [
+            'totalRevenue' => $data->sum('total_amount'),
+            'totalSalesCount' => $data->count(),
+            'totalDue' => $data->sum('due_amount'),
+            'totalProfit' => 0,
+        ];
+
+        $pdf = \PDF::loadView('reports.pdf', compact('data', 'reportType', 'reportTitle', 'dateFrom', 'dateTo', 'stats'));
+        $pdf->setPaper('a4', 'landscape');
+        return response()->streamDownload(fn() => print($pdf->output()), 'due_payments_' . now()->format('Y-m-d_His') . '.pdf', ['Content-Type' => 'application/pdf']);
+    }
+
     public function render()
     {
         $perPage = 10;
 
         // Get only sales with due amounts not equal to 0
         $salesQuery = Sale::where('due_amount', '>', 0)
-            ->where('user_id', auth()->id())
             ->with(['customer']);
 
         // Apply search filter

@@ -38,17 +38,22 @@
                 style="color: #fff; background: linear-gradient(135deg, #233d7f 0%, #1e3a8a 100%); border: none; font-weight: 600; transition: all 0.3s ease;">
                 <i class="bi bi-download me-1" aria-hidden="true"></i> Export CSV
             </button>
+            <button wire:click="exportPDF"
+                class="btn btn-danger rounded-full shadow-sm px-4 py-2 transition-all"
+                aria-label="Export products to PDF">
+                <i class="bi bi-file-earmark-pdf me-1" aria-hidden="true"></i> Export PDF
+            </button>
 
         </div>
     </div>
-    <div class="d-flex  align-items-center justify-content-between gap-4">
+    <!-- <div class="d-flex  align-items-center justify-content-between gap-4">
         <p class="ms-4">You can create custom field here <i class="bi bi-arrow-right ms-4"></i></p>
         <button class="btn btn-primary rounded-full mt-2 px-4 mb-4 fw-medium transition-all"
             wire:click="$set('showAddFieldModal', true)"
             style="background: linear-gradient(135deg, #233d7f 0%, #1e3a8a 100%); border: none; color: white;">
             <i class="bi bi-plus-circle me-2"></i>Add Field
         </button>
-    </div>
+    </div> -->
 
     <!-- Products Table -->
     <div class="card-body py-0 px-1  bg-transparent">

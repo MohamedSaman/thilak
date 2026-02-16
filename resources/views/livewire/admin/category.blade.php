@@ -42,6 +42,9 @@
 
             <!-- Action Buttons -->
             <div class="d-flex gap-2 flex-shrink-0 justify-content-lg-end">
+                <button wire:click="exportCSV" class="btn btn-success rounded-pill px-3 fw-medium">
+                    <i class="bi bi-file-earmark-spreadsheet me-1"></i> CSV
+                </button>
                 <button
                     class="btn btn-primary rounded-pill px-4 fw-medium"
                     wire:click="toggleAddModal">
