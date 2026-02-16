@@ -1,467 +1,326 @@
-<div class="container-fluid py-6 bg-gray-50 min-vh-100 transition-colors duration-300">
-    <!-- Page Header with Stats (unchanged) -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
-                <!-- Header Content (unchanged) -->
-                <div class="card-header text-white p-5 rounded-t-4 d-flex align-items-center"
-                    style="background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);">
-                    <div class="icon-shape icon-lg bg-white bg-opacity-25 rounded-circle p-3 d-flex align-items-center justify-content-center me-3">
-                        <i class="bi bi-cash-stack text-white fs-4" aria-hidden="true"></i>
-                    </div>
-                    <div>
-                        <h3 class="mb-1 fw-bold tracking-tight text-white">Cheque Payments Details</h3>
-                        <p class="text-white opacity-80 mb-0 text-sm">Manage and collect pending cheque payments from customers</p>
-                    </div>
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-6">
+            <div class="d-flex align-items-center gap-3">
+                <div class="icon-shape icon-lg bg-primary-soft text-primary rounded-xl">
+                    <i class="bi bi-cash-stack fs-4"></i>
                 </div>
-
-                <!-- Stats Cards (unchanged) -->
-                <div class="card-body p-5">
-                    <div class="row g-4">
-                        <!-- Pending Cheques Card -->
-                        <div class="col-xl-3 col-md-6">
-                            <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover:scale-105">
-                                <div class="card-body p-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-shape icon-md rounded-circle bg-info bg-opacity-10 me-3 text-center">
-                                            <i class="bi bi-hourglass text-info"></i>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-gray-600 mb-0 text-uppercase fw-semibold">Pending Cheques</p>
-                                            <div class="d-flex align-items-baseline mt-1">
-                                                <h3 class="mb-0 fw-bold text-gray-800">{{ $pendingChequeCount }}</h3>
-                                                <span class="badge bg-info bg-opacity-10 text-info ms-2 rounded-full" style="padding: 6px 12px;">To Collect</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Complete Cheque Card -->
-                        <div class="col-xl-3 col-md-6">
-                            <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover:scale-105">
-                                <div class="card-body p-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-shape icon-md rounded-circle bg-success bg-opacity-10 me-3 text-center">
-                                            <i class="bi bi-clock-history text-success"></i>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-gray-600 mb-0 text-uppercase fw-semibold">Complete Cheque</p>
-                                            <div class="d-flex align-items-baseline mt-1">
-                                                <h3 class="mb-0 fw-bold text-gray-800">{{ $completeChequeCount }}</h3>
-                                                <span class="badge bg-success bg-opacity-10 text-success ms-2 rounded-full" style="padding: 6px 12px;">Complete</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Return Cheques Card -->
-                        <div class="col-xl-3 col-md-6">
-                            <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover:scale-105">
-                                <div class="card-body p-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-shape icon-md rounded-circle bg-danger bg-opacity-10 me-3 text-center">
-                                            <i class="bi bi-exclamation-circle text-danger"></i>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-gray-600 mb-0 text-uppercase fw-semibold">Return Cheques</p>
-                                            <div class="d-flex align-items-baseline mt-1">
-                                                <h3 class="mb-0 fw-bold text-gray-800">{{ $returnChequeCount }}</h3>
-                                                <span class="badge bg-danger bg-opacity-10 text-danger ms-2 rounded-full" style="padding: 6px 12px;">Attention</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Total Due Amount Card -->
-                        <div class="col-xl-3 col-md-6">
-                            <div class="card border-0 shadow-lg rounded-4 h-100 transition-all hover:scale-105">
-                                <div class="card-body p-4">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-shape icon-md rounded-circle bg-success bg-opacity-10 me-3 text-center">
-                                            <i class="bi bi-currency-dollar text-success"></i>
-                                        </div>
-                                        <div>
-                                            <p class="text-xs text-gray-600 mb-0 text-uppercase fw-semibold">Total Cheque Due</p>
-                                            <div class="d-flex align-items-baseline mt-1">
-                                                <h4 class="mb-0 fw-bold text-gray-800">Rs.{{ number_format($totalDueAmount, 2) }}</h4>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <h2 class="fw-bold mb-1 border-0">Cheque Payments</h2>
+                    <p class="text-muted mb-0">Manage and track pending cheque payments from customers.</p>
                 </div>
+            </div>
+        </div>
+        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+             <div class="d-flex align-items-center justify-content-md-end gap-2">
+                <button wire:click="exportCSV" class="btn btn-white shadow-premium text-success">
+                    <i class="bi bi-file-earmark-spreadsheet me-2"></i>Export CSV
+                </button>
+                <button wire:click="exportPDF" class="btn btn-white shadow-premium text-danger">
+                    <i class="bi bi-file-earmark-pdf me-2"></i>Export PDF
+                </button>
+                <button wire:click="printDueChequePayments" class="btn btn-primary shadow-premium">
+                    <i class="bi bi-printer me-2"></i>Print Report
+                </button>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
-                <!-- Search & Filter Bar (unchanged, but added print button wire:click if needed) -->
-                <div class="card-header p-4" style="background-color: #eff6ff;">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-                        <div class="input-group shadow-sm rounded-full overflow-hidden" style="max-width: 400px;">
-                            <span class="input-group-text bg-white border-0">
-                                <i class="bi bi-search text-blue-600" aria-hidden="true"></i>
+    <!-- Stats Grid -->
+    <div class="row g-4 mb-5">
+        <div class="col-xl-3 col-sm-6">
+            <div class="stat-card p-4">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="icon-shape icon-lg bg-info-soft text-info">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <div class="text-end">
+                        <span class="text-xs fw-bold text-uppercase tracking-wider text-muted">Pending Cheques</span>
+                        <h3 class="mb-0 fw-bold">{{ $pendingChequeCount }}</h3>
+                    </div>
+                </div>
+                <div class="progress progress-sm rounded-pill mb-2">
+                    <div class="progress-bar bg-info" style="width: 70%"></div>
+                </div>
+                <span class="text-xs text-muted">Awaiting collection</span>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-sm-6">
+            <div class="stat-card p-4">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="icon-shape icon-lg bg-success-soft text-success">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div class="text-end">
+                        <span class="text-xs fw-bold text-uppercase tracking-wider text-muted">Complete Cheques</span>
+                        <h3 class="mb-0 fw-bold">{{ $completeChequeCount }}</h3>
+                    </div>
+                </div>
+                <div class="progress progress-sm rounded-pill mb-2">
+                    <div class="progress-bar bg-success" style="width: 100%"></div>
+                </div>
+                <span class="text-xs text-muted">Successfully cleared</span>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+            <div class="stat-card p-4">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="icon-shape icon-lg bg-danger-soft text-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <div class="text-end">
+                        <span class="text-xs fw-bold text-uppercase tracking-wider text-muted">Returned Cheques</span>
+                        <h3 class="mb-0 fw-bold">{{ $returnChequeCount }}</h3>
+                    </div>
+                </div>
+                <div class="progress progress-sm rounded-pill mb-2">
+                    <div class="progress-bar bg-danger" style="width: 30%"></div>
+                </div>
+                <span class="text-xs text-muted">Attention required</span>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-sm-6">
+            <div class="stat-card p-4">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="icon-shape icon-lg bg-primary-soft text-primary">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+                    <div class="text-end">
+                        <span class="text-xs fw-bold text-uppercase tracking-wider text-muted">Total Due</span>
+                        <h3 class="mb-0 fw-bold">Rs.{{ number_format($totalDueAmount, 2) }}</h3>
+                    </div>
+                </div>
+                <div class="progress progress-sm rounded-pill mb-2">
+                    <div class="progress-bar bg-primary" style="width: 100%"></div>
+                </div>
+                <span class="text-xs text-muted">Overall pending value</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Table -->
+    <div class="glass-card rounded-xl overflow-hidden shadow-premium">
+        <!-- Action Bar -->
+        <div class="p-4 bg-light-soft border-bottom">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text border-0 bg-transparent ps-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-0 bg-transparent text-sm" placeholder="Search invoice or customer..." wire:model.live.debounce.300ms="search">
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="d-flex flex-wrap justify-content-md-end gap-2">
+                        <div style="min-width: 180px;">
+                            <select class="form-select text-sm rounded-lg" wire:model.live="filters.status">
+                                <option value="">All Statuses</option>
+                                <option value="null">Pending Payment</option>
+                                <option value="pending">Pending Approval</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                        <div style="min-width: 150px;">
+                            <input type="date" class="form-control text-sm rounded-lg" placeholder="Start Date" wire:model.live="filters.startDate">
+                        </div>
+                        <div style="min-width: 150px;">
+                            <input type="date" class="form-control text-sm rounded-lg" placeholder="End Date" wire:model.live="filters.endDate">
+                        </div>
+                        <button class="btn btn-secondary btn-sm rounded-lg" wire:click="resetFilters" title="Reset Filters">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle mb-0 table-hover">
+                <thead class="bg-light-soft text-xs">
+                    <tr>
+                        <th class="ps-4">#</th>
+                        <th>Invoice</th>
+                        <th>Customer</th>
+                        <th>Cheque Details</th>
+                        <th class="text-center">Amount</th>
+                        <th class="text-center">Cheque Date</th>
+                        <th class="text-center">Status</th>
+                        <th class="pe-4 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($duePayments as $cheque)
+                    <tr class="hover-bg-light transition-all">
+                        <td class="ps-4 fw-bold text-muted text-xs">{{ $loop->iteration }}</td>
+                        <td><span class="fw-bold text-primary">{{ $cheque->payment->sale->invoice_number ?? 'N/A' }}</span></td>
+                        <td>
+                            <h6 class="mb-0 fw-bold">{{ $cheque->customer->name ?? 'N/A' }}</h6>
+                            <span class="text-xs text-muted">{{ $cheque->customer->phone ?? 'No phone' }}</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2 text-xs">
+                                <i class="bi bi-credit-card text-muted"></i>
+                                <span class="fw-medium text-muted">No: {{ $cheque->cheque_number ?? 'N/A' }}</span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <span class="fw-bold">Rs. {{ number_format($cheque->cheque_amount ?? 0, 2) }}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="text-sm {{ $cheque->cheque_date?->isPast() && $cheque->status === 'pending' ? 'text-danger fw-bold' : '' }}">
+                                {{ $cheque->cheque_date?->format('d/m/Y') ?? 'N/A' }}
                             </span>
-                            <input type="text"
-                                class="form-control border-0 py-2.5 bg-white text-gray-800"
-                                placeholder="Search invoices or customers..."
-                                wire:model.live.debounce.300ms="search"
-                                autocomplete="off"
-                                aria-label="Search invoices or customers">
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="dropdown">
-                                <button class="btn btn-light rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
-                                    type="button" id="filterDropdown" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <i class="bi bi-funnel me-1"></i> Filters
-                                    @if ($filters['status'] || $filters['dateRange'])
-                                    <span class="badge bg-primary ms-1 rounded-full" style="background-color: #1e40af; color: #ffffff;">!</span>
-                                    @endif
+                        </td>
+                        <td class="text-center">
+                            @php
+                                $statusClass = [
+                                    'pending' => 'badge-warning-soft',
+                                    'complete' => 'badge-success-soft',
+                                    'return' => 'badge-danger-soft'
+                                ][$cheque->status] ?? 'badge-secondary-soft';
+                            @endphp
+                            <span class="badge {{ $statusClass }} px-3 py-2 rounded-pill text-xs">
+                                @if($cheque->status == 'pending')
+                                    PENDING
+                                @elseif($cheque->status == 'complete')
+                                    COMPLETED
+                                @elseif($cheque->status == 'return')
+                                    RETURNED
+                                @else
+                                    {{ strtoupper($cheque->status ?? 'N/A') }}
+                                @endif
+                            </span>
+                        </td>
+                        <td class="pe-4 text-end">
+                            <div class="btn-group shadow-sm rounded-lg overflow-hidden bg-white">
+                                @if($cheque->status == 'pending')
+                                <button onclick="confirmCompletePayment({{ $cheque->id }})" class="btn btn-sm btn-white text-success" title="Mark as Complete">
+                                    <i class="bi bi-check-circle"></i>
                                 </button>
-                                <div class="dropdown-menu p-4 shadow-lg border-0 rounded-4" style="width: 300px;"
-                                    aria-labelledby="filterDropdown">
-                                    <h6 class="dropdown-header bg-light rounded py-2 mb-3 text-center text-sm fw-semibold" style="color: #1e3a8a;">Filter Options</h6>
-                                    <div class="mb-3">
-                                        <label class="form-label text-sm fw-semibold" style="color: #1e3a8a;">Payment Status</label>
-                                        <select class="form-select form-select-sm rounded-full shadow-sm"
-                                            wire:model.live="filters.status">
-                                            <option value="">All Statuses</option>
-                                            <option value="null">Pending Payment</option>
-                                            <option value="pending">Pending Approval</option>
-                                            <option value="approved">Approved</option>
-                                            <option value="rejected">Rejected</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label text-sm fw-semibold" style="color: #1e3a8a;">Due Date Range</label>
-                                        <input type="text"
-                                            class="form-control form-control-sm rounded-full shadow-sm"
-                                            placeholder="Select date range"
-                                            wire:model.live="filters.dateRange">
-                                    </div>
-                                    <div class="d-grid">
-                                        <button class="btn btn-light rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
-                                            wire:click="resetFilters">
-                                            <i class="bi bi-x-circle me-1"></i> Reset Filters
-                                        </button>
-                                    </div>
-                                </div>
+                                <button onclick="confirmReturnCheque({{ $cheque->id }})" class="btn btn-sm btn-white text-danger" title="Mark as Returned">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                </button>
+                                @elseif($cheque->status == 'return')
+                                <button wire:click="refundCheque({{ $cheque->id }})" class="btn btn-sm btn-white text-warning" title="Process Refund">
+                                    <i class="bi bi-arrow-left-right"></i>
+                                </button>
+                                @else
+                                <button class="btn btn-sm btn-white text-muted" disabled>
+                                    <i class="bi bi-lock-fill"></i>
+                                </button>
+                                @endif
                             </div>
-                            <button wire:click="exportCSV"
-                                class="btn btn-success rounded-full shadow-sm px-3 py-2">
-                                <i class="bi bi-file-earmark-spreadsheet me-1"></i> CSV
-                            </button>
-                            <button wire:click="exportPDF"
-                                class="btn btn-danger rounded-full shadow-sm px-3 py-2">
-                                <i class="bi bi-file-earmark-pdf me-1"></i> PDF
-                            </button>
-                            <button wire:click="printDueChequePayments"
-                                class="btn btn-light rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
-                                aria-label="Print due cheque payments">
-                                <i class="bi bi-printer me-1" aria-hidden="true"></i> Print
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Table Content -->
-                <div class="card-body p-5">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead style="background-color: #eff6ff;">
-                                <tr>
-                                    <th class="ps-4 text-uppercase text-xs fw-semibold py-3 text-center" style="color: #1e3a8a;">Invoice</th>
-                                    <th class="text-uppercase text-xs fw-semibold py-3 text-center" style="color: #1e3a8a;">Customer</th>
-                                    <th class="text-uppercase text-xs fw-semibold py-3 text-center" style="color: #1e3a8a;">Cheque Number</th>
-                                    <th class="text-uppercase text-xs fw-semibold py-3 text-center" style="color: #1e3a8a;">Amount</th>
-                                    <th class="text-uppercase text-xs fw-semibold py-3 text-center" style="color: #1e3a8a;">Cheque Date</th>
-                                    <th class="text-uppercase text-xs fw-semibold py-3 text-center" style="color: #1e3a8a;">Status</th>
-                                    <th class="text-uppercase text-xs fw-semibold py-3 text-center" style="color: #1e3a8a;">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($duePayments as $cheque)
-                                <tr>
-                                    <td class="text-center fw-bold">{{ $cheque->payment->sale->invoice_number ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $cheque->customer->name ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $cheque->cheque_number ?? 'N/A' }}</td>
-                                    <td class="text-center">Rs. {{ number_format($cheque->cheque_amount ?? 0, 2) }}</td>
-                                    <td class="text-center">{{ $cheque->cheque_date?->format('d/m/Y') ?? 'N/A' }}</td>
-                                    <td class="text-center">
-                                        <span class="px-3 py-1 fw-semibold {{ $cheque->status === 'pending' ? 'text-warning' : ($cheque->status === 'complete' ? 'text-success' : 'text-danger ') }}">
-                                            {{ ucfirst($cheque->status ?? 'Pending') }}
-                                        </span>
-                                    </td>
-
-                                    <td class="text-center">
-                                        @if($cheque->status == 'pending')
-                                        <div class="d-flex justify-content-center gap-2">
-                                            <button onclick="confirmCompletePayment({{ $cheque->id }})" class="btn btn-sm btn-success rounded-pill">Complete</button>
-                                            <button onclick="confirmReturnCheque({{ $cheque->id }})" class="btn btn-sm btn-danger rounded-pill">Return</button>
-                                        </div>
-                                        @elseif($cheque->status == 'return')
-                                        <div class="d-flex justify-content-center gap-2">
-                                            <button wire:click="refundCheque({{ $cheque->id }})" class="btn btn-sm btn-warning rounded-pill">Refund</button>
-                                        </div>
-                                        @else
-                                        <span class="text-success">completed</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="7" class="text-center py-4 text-gray-600">No due cheque payments found.</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="px-4 py-3 border-top">
-                        {{ $duePayments->links('livewire::bootstrap') }} <!-- Add pagination -->
-                    </div>
-                </div>
-            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="8" class="text-center py-5">
+                            <i class="bi bi-receipt fs-1 text-muted opacity-20"></i>
+                            <p class="text-muted mt-2">No due cheque payments found.</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
+        @if($duePayments->hasPages())
+        <div class="p-4 border-top">
+            {{ $duePayments->links() }}
+        </div>
+        @endif
     </div>
 
-    <!-- Payment Detail Modal -->
-    <div wire:ignore.self class="modal fade" id="payment-detail-modal" tabindex="-1" aria-labelledby="payment-detail-modal-label" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content rounded-4 shadow-lg">
-                <div class="modal-header text-white p-4"
-                    style="background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);">
-                    <h5 class="modal-title fw-bold tracking-tight" id="payment-detail-modal-label">
-                        <i class="bi bi-credit-card me-2"></i> Receive Cheque Payment
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Modals -->
+
+    {{-- Receive Cheque Payment Modal --}}
+    <div wire:ignore.self class="modal fade" id="payment-detail-modal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content border-0 shadow-premium rounded-xl overflow-hidden">
+                <div class="modal-header border-0 bg-primary-soft py-4 px-5">
+                    <h4 class="fw-bold mb-0 text-primary">Process Cheque Payment</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-5">
                     @if ($paymentDetail)
-                    <div class="row g-0">
-                        <!-- Invoice Overview -->
-                        <div class="col-md-3 bg-light p-4 border-end rounded-start-4">
-                            <div class="text-center mb-4">
-                                <div class="icon-shape icon-xl rounded-circle bg-primary bg-opacity-10 mx-auto d-flex align-items-center justify-content-center">
-                                    <span class="text-primary fw-bold" style="font-size: 2rem;">{{ substr($paymentDetail->sale->customer->name, 0, 1) }}</span>
+                    <div class="row g-5">
+                        <div class="col-md-4">
+                            <div class="glass-card p-4 h-100">
+                                <div class="text-center mb-4">
+                                    <div class="avatar avatar-xl rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center fw-bold fs-2 mb-3">
+                                        {{ strtoupper(substr($paymentDetail->customer->name ?? 'C', 0, 1)) }}
+                                    </div>
+                                    <h5 class="fw-bold mb-1">{{ $paymentDetail->customer->name ?? 'N/A' }}</h5>
+                                    <p class="text-muted text-sm">{{ $paymentDetail->customer->phone ?? 'N/A' }}</p>
                                 </div>
-                                <h6 class="mt-3 mb-0 fw-bold text-gray-800">{{ $paymentDetail->sale->customer->name }}</h6>
-                                <p class="text-sm text-gray-600 mb-0">{{ $paymentDetail->sale->customer->phone }}</p>
-                            </div>
-                            <h6 class="text-uppercase text-sm fw-semibold mb-3 border-bottom pb-2" style="color: #1e3a8a;">Invoice Details</h6>
-                            <div class="mb-3">
-                                <p class="mb-2 d-flex justify-content-between text-sm">
-                                    <span class="text-gray-600">Invoice:</span>
-                                    <span class="fw-bold text-gray-800">{{ $paymentDetail->sale->invoice_number }}</span>
-                                </p>
-                                <p class="mb-2 d-flex justify-content-between text-sm">
-                                    <span class="text-gray-600">Sale Date:</span>
-                                    <span class="text-gray-800">{{ $paymentDetail->sale->created_at->format('d/m/Y') }}</span>
-                                </p>
-                                <p class="mb-2 d-flex justify-content-between text-sm">
-                                    <span class="text-gray-600">Due Date:</span>
-                                    <span class="{{ now()->gt($paymentDetail->due_date) ? 'text-danger fw-bold' : 'text-gray-800' }}">
-                                        {{ $paymentDetail->due_date->format('d/m/Y') }}
-                                    </span>
-                                </p>
-                                <div class="card border-0 shadow-sm rounded-4 p-3 mt-3">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="text-sm text-gray-600">Amount Due:</span>
-                                        <span class="fw-bold text-primary" style="font-size: 1.5rem; color: #1e3a8a;">Rs.{{ number_format($paymentDetail->amount, 2) }}</span>
+                                <div class="border-top pt-4">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-sm text-muted">Invoice:</span>
+                                        <span class="text-sm fw-bold">#{{ $paymentDetail->payment->sale->invoice_number ?? 'N/A' }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-sm text-muted">Cheque No:</span>
+                                        <span class="text-sm fw-bold">{{ $paymentDetail->cheque_number ?? 'N/A' }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-4">
+                                        <span class="text-sm text-muted">Cheque Date:</span>
+                                        <span class="text-sm fw-bold">
+                                            {{ $paymentDetail->cheque_date?->format('d/m/Y') ?? 'N/A' }}
+                                        </span>
+                                    </div>
+                                    <div class="bg-primary-soft p-3 rounded-lg text-center">
+                                        <span class="text-xs text-primary text-uppercase fw-bold tracking-wider">Amount Due</span>
+                                        <h4 class="fw-bold text-primary mb-0">Rs.{{ number_format($paymentDetail->cheque_amount ?? 0, 2) }}</h4>
                                     </div>
                                 </div>
                             </div>
-                            @if (strpos($paymentDetail->sale->notes ?? '', 'Due date extended') !== false)
-                            <div class="alert alert-warning bg-warning bg-opacity-10 border-0 rounded-4 mt-3 p-3 text-sm">
-                                <div class="d-flex">
-                                    <div class="me-2">
-                                        <i class="bi bi-exclamation-triangle-fill text-warning"></i>
-                                    </div>
-                                    <div>
-                                        <p class="mb-0 fw-bold">Due date has been extended</p>
-                                        @php
-                                        $notes = explode("\n", $paymentDetail->sale->notes);
-                                        $extensionNotes = array_filter($notes, function ($note) {
-                                        return strpos($note, 'Due date extended') !== false;
-                                        });
-                                        @endphp
-                                        @foreach ($extensionNotes as $note)
-                                        <p class="mb-0 text-xs text-gray-600">{{ $note }}</p>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
                         </div>
-
-                        <!-- Payment Form -->
-                        <div class="col-md-9">
+                        <div class="col-md-8">
                             <form wire:submit.prevent="submitPayment">
-                                <div class="row g-0">
-                                    <div class="col-lg-12">
-                                        <div class="bg-light p-4 border-bottom rounded-top-4">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-shape icon-md rounded-circle bg-white bg-opacity-25 p-2 me-3">
-                                                    <i class="bi bi-wallet2 text-primary fs-4"></i>
-                                                </div>
-                                                <div>
-                                                    <h5 class="mb-0 fw-bold text-gray-800" style="color: #1e3a8a;">Cheque Payment Collection</h5>
-                                                    <p class="text-sm text-gray-600 mb-0">Record cheque payment details for admin approval</p>
-                                                </div>
-                                            </div>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Received Amount <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light-soft border-0">Rs.</span>
+                                            <input type="number" step="0.01" class="form-control" wire:model="receivedAmount">
                                         </div>
+                                        @error('receivedAmount') <span class="text-danger text-xs">{{ $message }}</span> @enderror
                                     </div>
-                                    <div class="col-lg-6 p-4">
-                                        <div class="mb-4">
-                                            <label class="form-label text-sm fw-semibold mb-2" style="color: #1e3a8a;">Received Amount <span class="text-danger">*</span></label>
-                                            <input type="text"
-                                                class="form-control rounded-4 shadow-sm @error('receivedAmount') is-invalid @enderror"
-                                                wire:model="receivedAmount"
-                                                required>
-                                            @error('receivedAmount')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                            <label class="form-label text-sm fw-semibold mb-2 mt-3" style="color: #1e3a8a;">Payment Method <span class="text-danger">*</span></label>
-                                            <div class="input-group shadow-sm rounded-4">
-                                                <span class="input-group-text bg-white border-end-0">
-                                                    <i class="bi bi-credit-card text-primary"></i>
-                                                </span>
-                                                <input type="text"
-                                                    class="form-control border-start-0 ps-0 rounded-end-4"
-                                                    value="Cheque"
-                                                    readonly>
-                                            </div>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label class="form-label text-sm fw-semibold mb-2" style="color: #1e3a8a;">Payment Notes</label>
-                                            <textarea class="form-control rounded-4 shadow-sm"
-                                                rows="3"
-                                                wire:model="paymentNote"
-                                                placeholder="Add any notes about this cheque payment (optional)"></textarea>
-                                            <div class="form-text text-sm text-gray-600">Include any specific details about this payment.</div>
-                                        </div>
-                                        <div class="alert alert-info bg-info bg-opacity-10 border-0 rounded-4 d-flex align-items-center shadow-sm p-3">
-                                            <i class="bi bi-info-circle-fill text-info fs-5 me-3"></i>
-                                            <div>
-                                                <p class="mb-0 text-sm text-gray-800">This cheque payment will be sent for admin approval.</p>
-                                                <p class="mb-0 text-xs text-gray-600">The customer's account will be updated once approved.</p>
-                                            </div>
-                                        </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Attached Document (CSV/PDF/Image)</label>
+                                        <input type="file" class="form-control" wire:model="duePaymentAttachment">
+                                        @error('duePaymentAttachment') <span class="text-danger text-xs">{{ $message }}</span> @enderror
                                     </div>
-                                    <div class="col-lg-6 p-4 bg-light border-start rounded-end-4">
-                                        <div class="mb-4">
-                                            <label class="form-label text-sm fw-semibold mb-2" style="color: #1e3a8a;">Cheque Receipt/Document</label>
-                                            <div class="input-group shadow-sm rounded-4 mb-2">
-                                                <span class="input-group-text bg-white border-end-0">
-                                                    <i class="bi bi-file-earmark-image text-primary"></i>
-                                                </span>
-                                                <input type="file"
-                                                    class="form-control border-start-0 ps-0 rounded-end-4 @error('duePaymentAttachment') is-invalid @enderror"
-                                                    wire:model="duePaymentAttachment">
-                                                @error('duePaymentAttachment')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="form-text text-sm text-gray-600">Upload cheque image or payment proof.</div>
-                                        </div>
-                                        <div class="card border-0 shadow-sm rounded-4 bg-white">
-                                            <div class="card-header p-3" style="background-color: #eff6ff;">
-                                                <div class="d-flex align-items-center">
-                                                    <i class="bi bi-image text-primary me-2"></i>
-                                                    <span class="text-sm fw-semibold" style="color: #1e3a8a;">Document Preview</span>
-                                                </div>
-                                            </div>
-                                            <div class="card-body p-0 text-center">
+                                    <div class="col-12">
+                                        <label class="form-label">Payment Notes (Optional)</label>
+                                        <textarea class="form-control" rows="3" wire:model="paymentNote" placeholder="Any additional information..."></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="glass-card p-3 bg-light-soft border-0">
+                                            <h6 class="fw-bold mb-3 text-sm">Attachment Preview</h6>
+                                            <div class="text-center">
                                                 @if ($duePaymentAttachment)
-                                                <div class="position-relative">
-                                                    @if(is_array($duePaymentAttachmentPreview))
-                                                    @if($duePaymentAttachmentPreview['type'] === 'pdf')
-                                                    <div class="d-flex flex-column align-items-center p-4">
-                                                        <i class="bi bi-file-earmark-pdf text-danger fs-1 mb-2"></i>
-                                                        <span class="text-sm text-gray-600">PDF document</span>
-                                                        <span class="text-xs text-gray-600">{{ $duePaymentAttachment->getClientOriginalName() }}</span>
+                                                    <div class="preview-box p-3 border rounded-xl bg-white">
+                                                        <i class="bi bi-file-earmark-check fs-1 text-success"></i>
+                                                        <p class="mb-0 mt-2 text-sm">{{ $duePaymentAttachment->getClientOriginalName() }}</p>
                                                     </div>
-                                                    @elseif($duePaymentAttachmentPreview['type'] === 'image' && !empty($duePaymentAttachmentPreview['preview']))
-                                                    <img src="{{ $duePaymentAttachmentPreview['preview'] }}"
-                                                        class="img-fluid"
-                                                        style="max-height: 200px;">
-                                                    @else
-                                                    <div class="d-flex flex-column align-items-center p-4">
-                                                        <i class="bi {{ $duePaymentAttachmentPreview['icon'] ?? 'bi-file-earmark' }} {{ $duePaymentAttachmentPreview['color'] ?? 'text-gray-600' }} fs-1 mb-2"></i>
-                                                        <span class="text-sm text-gray-600">File attached</span>
-                                                        <span class="text-xs text-gray-600">{{ $duePaymentAttachment->getClientOriginalName() }}</span>
-                                                    </div>
-                                                    @endif
-                                                    @else
-                                                    <div class="d-flex flex-column align-items-center p-4">
-                                                        <i class="bi bi-file-earmark text-gray-600 fs-1 mb-2"></i>
-                                                        <span class="text-sm text-gray-600">File attached</span>
-                                                        <span class="text-xs text-gray-600">{{ $duePaymentAttachment->getClientOriginalName() }}</span>
-                                                    </div>
-                                                    @endif
-                                                    <div class="position-absolute bottom-0 start-0 end-0 py-2 px-3 bg-dark bg-opacity-50 text-white text-start text-sm">
-                                                        <i class="bi bi-check-circle-fill text-success me-1"></i> New attachment preview
-                                                    </div>
-                                                </div>
                                                 @elseif($paymentDetail && $paymentDetail->due_payment_attachment)
-                                                <div class="position-relative">
-                                                    @php
-                                                    $attachment = is_array($paymentDetail->due_payment_attachment)
-                                                    ? ($paymentDetail->due_payment_attachment[0] ?? '')
-                                                    : $paymentDetail->due_payment_attachment;
-                                                    @endphp
-                                                    @if(pathinfo($attachment, PATHINFO_EXTENSION) === 'pdf')
-                                                    <div class="d-flex flex-column align-items-center p-4">
-                                                        <i class="bi bi-file-earmark-pdf text-danger fs-1 mb-2"></i>
-                                                        <a href="{{ asset('public/storage/' . $attachment) }}"
-                                                            target="_blank"
-                                                            class="btn btn-light rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105">
-                                                            <i class="bi bi-eye me-1"></i> View PDF
-                                                        </a>
+                                                    <div class="preview-box p-3 border rounded-xl bg-white">
+                                                        <i class="bi bi-file-earmark-check fs-1 text-primary"></i>
+                                                        <p class="mb-0 mt-2 text-sm">Existing Attachment Available</p>
                                                     </div>
-                                                    @else
-                                                    <img src="{{ asset('public/storage/' . $attachment) }}"
-                                                        class="img-fluid"
-                                                        style="max-height: 200px;"
-                                                        onerror="this.onerror=null; this.src=''; this.parentNode.innerHTML='<div class=\'d-flex flex-column align-items-center p-4\'><i class=\'bi bi-file-earmark-image text-primary fs-1 mb-2\'></i><span class=\'text-sm text-gray-600\'>Image (cannot display preview)</span></div>';">
-                                                    @endif
-                                                    <div class="position-absolute bottom-0 start-0 end-0 py-2 px-3 bg-dark bg-opacity-50 text-white text-start text-sm">
-                                                        <i class="bi bi-exclamation-circle-fill text-warning me-1"></i> Existing attachment
-                                                    </div>
-                                                </div>
                                                 @else
-                                                <div class="p-5 d-flex flex-column align-items-center">
-                                                    <div class="icon-shape icon-md bg-light rounded-circle mb-3">
-                                                        <i class="bi bi-file-earmark-plus fs-4 text-gray-600"></i>
+                                                    <div class="p-4 border border-dashed rounded-xl opacity-50">
+                                                        <i class="bi bi-image fs-1 mb-2"></i>
+                                                        <p class="mb-0 text-sm">No document attached</p>
                                                     </div>
-                                                    <p class="text-sm text-gray-600 mb-0">No document attached</p>
-                                                    <p class="text-xs text-gray-600">Upload cheque image or payment proof</p>
-                                                </div>
                                                 @endif
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 p-4 bg-white border-top">
-                                        <div class="d-flex justify-content-end gap-2">
-                                            <button type="button"
-                                                class="btn btn-light rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
-                                                data-bs-dismiss="modal">
-                                                <i class="bi bi-x me-1"></i> Cancel
-                                            </button>
-                                            <button type="submit"
-                                                class="btn btn-light rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105">
-                                                <i class="bi bi-send me-1"></i> Submit for Approval
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -470,342 +329,55 @@
                     </div>
                     @else
                     <div class="text-center py-5">
-                        <div style="width:72px;height:72px;background-color:#f3f4f6;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto;margin-bottom:12px;">
-                            <i class="bi bi-credit-card text-gray-600 fs-3"></i>
-                        </div>
-                        <h5 class="text-gray-600 fw-normal">Loading Payment Details</h5>
-                        <p class="text-sm text-gray-500 mb-0">Please wait while data is being loaded...</p>
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="text-muted mt-3">Loading details...</p>
                     </div>
+                    @endif
+                </div>
+                <div class="modal-footer border-0 bg-light-soft p-4">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+                    @if($paymentDetail)
+                    <button type="button" class="btn btn-primary px-5 shadow-premium" wire:click="submitPayment">
+                        Complete Payment
+                    </button>
                     @endif
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Extend Due Date Modal -->
-    <div wire:ignore.self class="modal fade" id="extend-due-modal" tabindex="-1" aria-labelledby="extend-due-modal-label" aria-hidden="true">
+    {{-- Extend Due Date Modal --}}
+    <div wire:ignore.self class="modal fade" id="extend-due-modal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg rounded-4">
-                <div class="modal-header text-white p-4"
-                    style="background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);">
-                    <h5 class="modal-title fw-bold tracking-tight" id="extend-due-modal-label">
-                        <i class="bi bi-calendar-plus me-2"></i> Extend Cheque Due Date
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-content border-0 shadow-premium rounded-xl overflow-hidden">
+                <div class="modal-header border-0 bg-warning-soft py-4 px-5">
+                    <h4 class="fw-bold mb-0 text-warning">Extend Cheque Due Date</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-5">
-                    <form wire:submit.prevent="extendDueDate">
-                        <div class="text-center mb-4">
-                            <div class="icon-shape icon-xl bg-warning bg-opacity-10 rounded-circle mx-auto mb-3">
-                                <i class="bi bi-calendar-week text-warning fs-2"></i>
-                            </div>
-                            <h5 class="fw-bold text-gray-800" style="color: #1e3a8a;">Extend Cheque Payment Due Date</h5>
-                            <p class="text-sm text-gray-600">Provide a new due date and reason for extension</p>
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <label class="form-label">New Due Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" wire:model="newDueDate" min=\"{{ date('Y-m-d') }}\">
+                            @error('newDueDate') <span class="text-danger text-xs text-bold">{{ $message }}</span> @enderror
                         </div>
-                        <div class="mb-4">
-                            <label class="form-label text-sm fw-semibold mb-2" style="color: #1e3a8a;">New Due Date <span class="text-danger">*</span></label>
-                            <div class="input-group shadow-sm rounded-4">
-                                <span class="input-group-text bg-white border-end-0">
-                                    <i class="bi bi-calendar-date text-primary"></i>
-                                </span>
-                                <input type="date"
-                                    class="form-control border-start-0 ps-0 rounded-end-4 @error('newDueDate') is-invalid @enderror"
-                                    wire:model="newDueDate"
-                                    min="{{ date('Y-m-d') }}">
-                                @error('newDueDate')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                        <div class="col-12">
+                            <label class="form-label">Reason for Extension <span class="text-danger">*</span></label>
+                            <textarea class="form-control" rows="3" wire:model="extensionReason" placeholder="Explain the reason for extension..."></textarea>
+                            @error('extensionReason') <span class="text-danger text-xs text-bold">{{ $message }}</span> @enderror
                         </div>
-                        <div class="mb-4">
-                            <label class="form-label text-sm fw-semibold mb-2" style="color: #1e3a8a;">Reason for Extension <span class="text-danger">*</span></label>
-                            <textarea class="form-control rounded-4 shadow-sm @error('extensionReason') is-invalid @enderror"
-                                wire:model="extensionReason"
-                                rows="3"
-                                placeholder="Explain why the due date needs to be extended..."></textarea>
-                            @error('extensionReason')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <div class="form-text text-sm text-gray-600">This information will be added to the sale notes.</div>
-                        </div>
-                        <div class="d-flex justify-content-end gap-2 mt-4">
-                            <button type="button"
-                                class="btn btn-light rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105"
-                                data-bs-dismiss="modal">
-                                <i class="bi bi-x me-1"></i> Cancel
-                            </button>
-                            <button type="submit"
-                                class="btn btn-light rounded-full shadow-sm px-4 py-2 transition-transform hover:scale-105">
-                                <i class="bi bi-check2-circle me-1"></i> Confirm Extension
-                            </button>
-                        </div>
-                    </form>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 bg-light-soft p-4">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Discard</button>
+                    <button type="button" class="btn btn-warning px-5 shadow-premium" wire:click="extendDueDate">Confirm Extension</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@push('styles')
-<style>
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f3f4f6;
-    }
-
-    .container-fluid {
-        background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
-        min-height: 100vh;
-    }
-
-    .card {
-        border-radius: 1rem;
-        box-shadow: 0 4px 15px rgba(35, 61, 127, 0.1);
-    }
-
-    .card-header {
-        border-radius: 1rem 1rem 0 0;
-        border: none;
-    }
-
-    .tracking-tight {
-        letter-spacing: -0.025em;
-    }
-
-    .transition-all {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .icon-shape {
-        width: 2rem;
-        height: 2rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .icon-shape.icon-lg {
-        width: 3rem;
-        height: 3rem;
-    }
-
-    /* Table Styling */
-    .table {
-        border-collapse: separate;
-        border-spacing: 0;
-        margin-bottom: 0;
-    }
-
-    .table thead th {
-        background: linear-gradient(135deg, #eff6ff 0%, #f0f4ff 100%);
-        color: #233d7f;
-        font-weight: 700;
-        border: 1px solid #e5e7eb;
-        padding: 1rem 0.75rem !important;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        letter-spacing: 0.5px;
-    }
-
-    .table tbody tr {
-        border: 1px solid #e5e7eb;
-        transition: all 0.3s ease;
-    }
-
-    .table tbody tr:nth-child(even) {
-        background-color: #f9fafb;
-    }
-
-    .table tbody tr:hover {
-        background-color: #eff6ff;
-        box-shadow: 0 4px 12px rgba(35, 61, 127, 0.08);
-    }
-
-    .table tbody td {
-        padding: 1rem 0.75rem !important;
-        color: #4b5563;
-        vertical-align: middle;
-        border: 1px solid #e5e7eb;
-    }
-
-    /* Button Styling */
-    .btn {
-        border-radius: 0.5rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, #233d7f 0%, #1e3a8a 100%);
-        border: none;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(35, 61, 127, 0.3);
-    }
-
-    .btn-secondary {
-        background-color: #6b7280;
-        border: none;
-    }
-
-    .btn-secondary:hover {
-        background-color: #4b5563;
-        transform: translateY(-2px);
-    }
-
-    .btn-danger {
-        background-color: #ef4444;
-        border: none;
-    }
-
-    .btn-danger:hover {
-        background-color: #dc2626;
-        transform: translateY(-2px);
-    }
-
-    /* Modal Styling */
-    .modal-content {
-        border: 2px solid #233d7f;
-        border-radius: 1rem;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-    }
-
-    .modal-header {
-        background: linear-gradient(135deg, #233d7f 0%, #1e3a8a 100%);
-        color: white;
-        border-bottom: none;
-        border-radius: 1rem 1rem 0 0;
-    }
-
-    .modal-footer {
-        background-color: #f8f9fa;
-        border-top: 1px solid #e5e7eb;
-    }
-
-    /* Form Control Styling */
-    .form-control,
-    .form-select {
-        border: 2px solid #e5e7eb;
-        border-radius: 0.5rem;
-        transition: all 0.3s ease;
-        padding: 0.75rem 1rem;
-    }
-
-    .form-control:focus,
-    .form-select:focus {
-        border-color: #233d7f;
-        box-shadow: 0 0 0 0.2rem rgba(35, 61, 127, 0.15);
-        background-color: #ffffff;
-    }
-
-    .form-label {
-        color: #233d7f;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-
-    /* Stat Cards Styling */
-    .stat-card {
-        background: white;
-        border-radius: 1rem;
-        padding: 1.5rem;
-        box-shadow: 0 4px 12px rgba(35, 61, 127, 0.08);
-        border: 1px solid #e5e7eb;
-    }
-
-    .stat-card:hover {
-        box-shadow: 0 8px 20px rgba(35, 61, 127, 0.12);
-        transform: translateY(-2px);
-    }
-
-    /* Text Styles */
-    .text-sm {
-        font-size: 0.875rem;
-    }
-
-    .text-xs {
-        font-size: 0.75rem;
-    }
-
-    .fw-medium {
-        font-weight: 500;
-    }
-
-    /* Pagination Styling */
-    .pagination {
-        margin-top: 1.5rem;
-    }
-
-    .page-link {
-        color: #233d7f;
-        border: 1px solid #e5e7eb;
-        border-radius: 0.5rem;
-        margin: 0 2px;
-        transition: all 0.3s ease;
-    }
-
-    .page-link:hover {
-        background-color: #eff6ff;
-        border-color: #233d7f;
-        color: #1e3a8a;
-    }
-
-    .page-item.active .page-link {
-        background: linear-gradient(135deg, #233d7f 0%, #1e3a8a 100%);
-        border-color: #233d7f;
-    }
-
-    /* Alert Styling */
-    .alert {
-        border-radius: 0.75rem;
-        border: 1px solid transparent;
-    }
-
-    .alert-success {
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-        border-color: #6ee7b7;
-        color: #065f46;
-    }
-
-    .alert-danger {
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        border-color: #f87171;
-        color: #7f1d1d;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .container-fluid {
-            padding: 1rem 0.5rem;
-        }
-
-        .card-header {
-            flex-direction: column !important;
-            text-align: center;
-        }
-
-        .table {
-            font-size: 0.875rem;
-        }
-
-        .table thead th {
-            padding: 0.75rem 0.5rem !important;
-        }
-
-        .table tbody td {
-            padding: 0.75rem 0.5rem !important;
-        }
-    }
-</style>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-@endpush
-
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('livewire:init', () => {
         Livewire.on('openModal', (modalId) => {
@@ -831,149 +403,90 @@
                 timer: 3000,
                 timerProgressBar: true,
                 background: '#ffffff',
-                color: '#1f2937',
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer);
-                    toast.addEventListener('mouseleave', Swal.resumeTimer);
-                }
+                color: '#1f2937'
             });
         });
 
-        // Handle confirmation dialogs for actions
-        Livewire.on('confirmAction', (data) => {
-            Swal.fire({
-                title: data.title,
-                text: data.text,
-                icon: data.icon,
-                showCancelButton: true,
-                confirmButtonColor: data.icon === 'success' ? '#22c55e' : '#ef4444',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: data.confirmButtonText,
-                cancelButtonText: data.cancelButtonText,
-                reverseButtons: true,
-                allowOutsideClick: false,
-                allowEscapeKey: true,
-                focusConfirm: false,
-                focusCancel: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Get the Livewire component and call the method
-                    window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id'))
-                        .call(data.method, ...data.params);
-                }
-            });
-        });
-
-        // Direct confirmation functions for buttons
         window.confirmCompletePayment = function(chequeId) {
             Swal.fire({
-                title: 'Mark Cheque as Complete',
-                text: 'Are you sure you want to mark this cheque as complete? This action will update the payment status to "Paid".',
-                icon: 'success',
+                title: 'Mark as Complete?',
+                text: 'Are you sure you want to mark this cheque as paid and complete?',
+                icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#22c55e',
+                confirmButtonColor: '#10b981',
                 cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Yes, Mark Complete',
-                cancelButtonText: 'Cancel',
-                reverseButtons: true
+                confirmButtonText: 'Yes, Mark Paid',
+                customClass: {
+                    popup: 'rounded-xl border-0 shadow-premium',
+                    confirmButton: 'btn btn-success px-4',
+                    cancelButton: 'btn btn-secondary px-4'
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id'))
-                        .call('completePaymentDetails', chequeId);
+                    @this.call('completePaymentDetails', chequeId);
                 }
             });
         };
 
         window.confirmReturnCheque = function(chequeId) {
             Swal.fire({
-                title: 'Mark Cheque as Returned',
-                text: 'Are you sure you want to mark this cheque as returned? This indicates the cheque was not honored by the bank.',
+                title: 'Mark as Returned?',
+                text: 'Confirming this will mark the cheque as returned/bounced.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#ef4444',
                 cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Yes, Mark as Returned',
-                cancelButtonText: 'Cancel',
-                reverseButtons: true
+                confirmButtonText: 'Yes, Mark Returned',
+                customClass: {
+                    popup: 'rounded-xl border-0 shadow-premium',
+                    confirmButton: 'btn btn-danger px-4',
+                    cancelButton: 'btn btn-secondary px-4'
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id'))
-                        .call('returnCheque', chequeId);
+                    @this.call('returnCheque', chequeId);
                 }
             });
         };
 
-        // Print due cheque payments table
+        // Print function
         Livewire.on('print-due-cheque-payments', function() {
             const printWindow = window.open('', '_blank', 'width=1000,height=700');
-            const tableElement = document.querySelector('.table.table-hover').cloneNode(true);
-            const actionColumnIndex = 5;
+            const tableElement = document.querySelector('.table').cloneNode(true);
+            
+            // Remove actions column
             const headerRow = tableElement.querySelector('thead tr');
-            const headerCells = headerRow.querySelectorAll('th');
-            headerCells[actionColumnIndex].remove();
+            headerRow.lastElementChild.remove();
             const rows = tableElement.querySelectorAll('tbody tr');
             rows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                if (cells.length > actionColumnIndex) {
-                    cells[actionColumnIndex].remove();
-                }
+                if (row.lastElementChild) row.lastElementChild.remove();
             });
 
             const htmlContent = `
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>Due Cheque Payments - Print Report</title>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+                    <title>Cheque Payments Report</title>
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
                     <style>
-                        @page { size: landscape; margin: 1cm; }
-                        body { font-family: 'Inter', sans-serif; padding: 20px; font-size: 14px; color: #1f2937; }
-                        .print-container { max-width: 900px; margin: 0 auto; }
-                        .print-header { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #1e40af; display: flex; justify-content: space-between; align-items: center; }
-                        .print-header h2 { color: #1e40af; font-weight: 700; letter-spacing: -0.025em; }
-                        .print-footer { margin-top: 20px; padding-top: 15px; border-top: 2px solid #e5e7eb; text-align: center; font-size: 12px; color: #6b7280; }
-                        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-                        th, td { border: 1px solid #e5e7eb; padding: 12px; text-align: center; vertical-align: middle; }
-                        th { background-color: #eff6ff; font-weight: 600; text-transform: uppercase; color: #1e3a8a; }
-                        tr:nth-child(even) { background-color: #f9fafb; }
-                        tr:hover { background-color: #f1f5f9; }
-                        .badge { padding: 6px 12px; border-radius: 9999px; font-size: 0.875rem; font-weight: 600; color: #ffffff; }
-                        .bg-primary { background-color: #1e40af; }
-                        .bg-info { background-color: #0ea5e9; }
-                        .bg-success { background-color: #22c55e; }
-                        .bg-danger { background-color: #ef4444; }
-                        .bg-warning { background-color: #f59e0b; }
-                        .no-print { display: none; }
-                        @media print {
-                            .no-print { display: none; }
-                            thead { display: table-header-group; }
-                            tr { page-break-inside: avoid; }
-                            body { padding: 10px; }
-                            .print-container { max-width: 100%; }
-                            table { -webkit-print-color-adjust: exact; color-adjust: exact; }
-                        }
+                        body { font-family: 'Inter', sans-serif; padding: 40px; color: #1a2d5e; }
+                        .report-header { border-bottom: 2px solid #233d7f; margin-bottom: 30px; padding-bottom: 20px; }
+                        table { width: 100%; font-size: 13px; }
+                        th { background-color: #f8faff !important; color: #233d7f !important; text-transform: uppercase; font-size: 11px; }
+                        .badge { border: 1px solid #ddd; color: #333; background: none; }
+                        @media print { .no-print { display: none; } }
                     </style>
                 </head>
                 <body>
-                    <div class="print-container">
-                        <div class="print-header">
-                            <h2 class="fw-bold tracking-tight">Due Cheque Payments</h2>
-                            <div class="no-print">
-                                <button class="btn btn-light rounded-full px-4" style="background-color:#ffffff;border-color:#ffffff;color:#1e3a8a;" onclick="window.print();">Print</button>
-                                <button class="btn btn-light rounded-full px-4 ms-2" style="background-color:#ffffff;border-color:#ffffff;color:#1e3a8a;" onclick="window.close();">Close</button>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            ${tableElement.outerHTML}
-                        </div>
-                        <div class="print-footer">
-                            <small>Generated on ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Colombo' })}</small><br>
-                            <small>(THILAK HARDWARE) | NO 569/17A, THIHARIYA, KALAGEDIHENA. | Phone: 077 9089961</small>
-                        </div>
+                    <div class="report-header">
+                        <h2 class="fw-bold">Cheque Payments Due Report</h2>
+                        <p class="text-muted mb-0">Generated on: ${new Date().toLocaleString()}</p>
                     </div>
+                    ${tableElement.outerHTML}
+                    <div class="mt-5 text-center text-muted small">
+                        <p>Thilak Hardware Management System</p>
+                    </div>
+                    <script>window.print();<\/script>
                 </body>
                 </html>
             `;
@@ -981,9 +494,6 @@
             printWindow.document.open();
             printWindow.document.write(htmlContent);
             printWindow.document.close();
-            printWindow.onload = function() {
-                printWindow.focus();
-            };
         });
     });
 </script>

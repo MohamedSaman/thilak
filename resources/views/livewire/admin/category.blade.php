@@ -1,177 +1,132 @@
-<div class="container-fluid py-2">
-
-    <!-- Success Message -->
-    @if (session()->has('message'))
-    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-        <div class="d-flex align-items-center">
-            <i class="bi bi-check-circle-fill me-2"></i>
-            {{ session('message') }}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-6">
+            <div class="d-flex align-items-center gap-3">
+                <div class="icon-shape icon-lg bg-primary-soft text-primary rounded-xl">
+                    <i class="bi bi-collection fs-4"></i>
+                </div>
+                <div>
+                    <h2 class="fw-bold mb-1">Product Categories</h2>
+                    <p class="text-muted mb-0">Organize your products into meaningful groups.</p>
+                </div>
+            </div>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+            <div class="d-inline-flex gap-2">
+                <button wire:click="exportCSV" class="btn btn-secondary shadow-premium">
+                    <i class="bi bi-file-earmark-spreadsheet me-2"></i>Export CSV
+                </button>
+                <button wire:click="toggleAddModal" class="btn btn-primary shadow-premium">
+                    <i class="bi bi-plus-lg me-2"></i>New Category
+                </button>
+            </div>
+        </div>
     </div>
-    @endif
 
-    <!-- Page Card -->
-    <div class="card shadow-lg border-0 fade-in-up">
-        <!-- Header Section -->
-        <div class="card-header text-white p-4 d-flex align-items-center">
-            <div class="icon-shape icon-lg bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center me-3">
-                <i class="bi bi-collection fs-4 text-white" aria-hidden="true"></i>
-            </div>
-            <div>
-                <h3 class="mb-1 fw-bold tracking-tight text-white">Product Category Details</h3>
-                <p class="text-white opacity-80 mb-0 text-sm">Monitor and manage your product categories</p>
-            </div>
-        </div>
-
-        <!-- Search & Actions Bar -->
-        <div class="card-header bg-transparent pb-4 mt-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 border-bottom">
-            <!-- Search Bar -->
-            <div class="flex-grow-1 d-flex justify-content-lg">
-                <div class="input-group" style="max-width: 600px;">
-                    <span class="input-group-text bg-gray-100 border-0 px-3">
-                        <i class="bi bi-search text-primary"></i>
+    <!-- Search Bar -->
+    <div class="glass-card p-3 mb-4 rounded-xl">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-12">
+                <div class="input-group input-group-merge">
+                    <span class="input-group-text bg-transparent border-0 pe-0">
+                        <i class="bi bi-search text-muted"></i>
                     </span>
-                    <input type="text"
-                        class="form-control"
-                        placeholder="Search category..."
-                        wire:model.live.debounce.300ms="search"
-                        autocomplete="off">
+                    <input type="text" 
+                           class="form-control border-0 bg-transparent py-2" 
+                           placeholder="Search categories by name or description..."
+                           wire:model.live.debounce.300ms="search">
                 </div>
             </div>
-
-            <!-- Action Buttons -->
-            <div class="d-flex gap-2 flex-shrink-0 justify-content-lg-end">
-                <button wire:click="exportCSV" class="btn btn-success rounded-pill px-3 fw-medium">
-                    <i class="bi bi-file-earmark-spreadsheet me-1"></i> CSV
-                </button>
-                <button
-                    class="btn btn-primary rounded-pill px-4 fw-medium"
-                    wire:click="toggleAddModal">
-                    <i class="bi bi-plus-circle me-2"></i>Add Category
-                </button>
-            </div>
         </div>
+    </div>
 
-        <!-- Categories Table -->
-        <div class="card-body p-4 bg-transparent">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th class="text-center">ID</th>
-                            <th class="text-center">Name</th>
-                            <th class="text-center">Description</th>
-                            <th class="text-center">Created At</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($categories as $category)
-                        <tr>
-                            <td class="text-center">{{ $category->id }}</td>
-                            <td class="text-center fw-medium">{{ $category->name }}</td>
-                            <td class="text-center">{{ $category->description }}</td>
-                            <td class="text-center">{{ $category->created_at->format('d/m/Y') }}</td>
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <button
-                                        class="btn btn-sm btn-light"
-                                        wire:click="toggleEditModal({{ $category->id }})"
-                                        title="Edit">
-                                        <i class="bi bi-pencil text-primary"></i>
-                                    </button>
-                                    <button
-                                        class="btn btn-sm btn-light text-danger"
-                                        wire:click="toggleDeleteModal({{ $category->id }})"
-                                        title="Delete">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+    <!-- Categories Table -->
+    <div class="glass-card rounded-xl overflow-hidden shadow-premium">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="bg-light-soft">
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>Category Name</th>
+                        <th>Description</th>
+                        <th class="text-center">Created At</th>
+                        <th class="pe-4 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($categories as $category)
+                    <tr class="hover-bg-light transition-all">
+                        <td class="ps-4 fw-bold text-muted text-xs">#{{ $category->id }}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="icon-shape icon-sm bg-primary-soft text-primary rounded-lg">
+                                    <i class="bi bi-folder"></i>
                                 </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="text-center py-4 text-muted">
-                                <i class="bi bi-exclamation-circle me-2"></i>No categories found.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Pagination -->
-            <div class="mt-3">
-                {{ $categories->links('livewire::bootstrap') }}
-            </div>
+                                <span class="fw-bold text-dark">{{ $category->name }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="text-sm text-muted">{{ Str::limit($category->description, 60) ?: 'No description provided' }}</span>
+                        </td>
+                        <td class="text-center">
+                            <span class="text-xs fw-bold text-muted">{{ $category->created_at->format('M d, Y') }}</span>
+                        </td>
+                        <td class="pe-4 text-end">
+                            <div class="btn-group shadow-sm rounded-lg overflow-hidden bg-white">
+                                <button wire:click="toggleEditModal({{ $category->id }})" class="btn btn-sm btn-white text-info" title="Edit"><i class="bi bi-pencil"></i></button>
+                                <button wire:click="toggleDeleteModal({{ $category->id }})" class="btn btn-sm btn-white text-danger" title="Delete"><i class="bi bi-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="opacity-30 mb-3 fs-1"><i class="bi bi-folder2-open"></i></div>
+                            <h6 class="text-muted">No categories found in the database.</h6>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
+        @if($categories->hasPages())
+        <div class="p-4 border-top bg-light-soft">
+            {{ $categories->links('livewire::bootstrap') }}
+        </div>
+        @endif
     </div>
 
-    <!-- Add Category Modal -->
-    @if($showAddModal)
-    <div class="modal fade show d-block" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">
-                        <i class="bi bi-plus-circle me-2"></i>Add New Category
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" wire:click="$set('showAddModal', false)" aria-label="Close"></button>
-                </div>
-                <form wire:submit.prevent="save">
-                    <div class="modal-body">
-                        <div class="mb-4">
-                            <label for="name" class="form-label">Category Name</label>
-                            <input type="text" wire:model="name" class="form-control" id="name" placeholder="Enter category name">
-                            @error('name') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                        </div>
-                        <div class="mb-4">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea wire:model="description" class="form-control" id="description" rows="4" placeholder="Enter description"></textarea>
-                            @error('description') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary rounded-pill px-4" wire:click="$set('showAddModal', false)">Cancel</button>
-                        <button type="submit" class="btn btn-primary rounded-pill px-4">
-                            <i class="bi bi-check-circle me-2"></i>Save
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    @endif
+    <!-- Modals -->
 
-    <!-- Edit Category Modal -->
-    @if($showEditModal)
-    <div class="modal fade show d-block" tabindex="-1">
+    <!-- Add/Edit Modal -->
+    @if($showAddModal || $showEditModal)
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold">
-                        <i class="bi bi-pencil me-2"></i>Edit Category
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" wire:click="$set('showEditModal', false))" aria-label="Close"></button>
+            <div class="modal-content border-0 shadow-premium rounded-xl overflow-hidden">
+                <div class="modal-header border-0 bg-primary-soft py-4 px-5">
+                    <h4 class="fw-bold mb-0 text-primary">
+                        {{ $showAddModal ? 'Create Category' : 'Edit Category' }}
+                    </h4>
+                    <button type="button" class="btn-close" wire:click="$set('{{ $showAddModal ? 'showAddModal' : 'showEditModal' }}', false)"></button>
                 </div>
-                <form wire:submit.prevent="update">
-                    <div class="modal-body">
+                <form wire:submit.prevent="{{ $showAddModal ? 'save' : 'update' }}">
+                    <div class="modal-body p-5">
                         <div class="mb-4">
-                            <label for="edit-name" class="form-label">Category Name</label>
-                            <input type="text" wire:model="name" class="form-control" id="edit-name" placeholder="Enter category name">
-                            @error('name') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                            <label class="form-label text-sm fw-bold">Category Name</label>
+                            <input type="text" wire:model="name" class="form-control" placeholder="E.g. Electrical, Plumbing, Tools">
+                            @error('name') <span class="text-danger text-xs">{{ $message }}</span> @enderror
                         </div>
-                        <div class="mb-4">
-                            <label for="edit-description" class="form-label">Description</label>
-                            <textarea wire:model="description" class="form-control" id="edit-description" rows="4" placeholder="Enter description"></textarea>
-                            @error('description') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        <div class="mb-0">
+                            <label class="form-label text-sm fw-bold">Description</label>
+                            <textarea wire:model="description" class="form-control" rows="4" placeholder="Briefly describe what this category contains..."></textarea>
+                            @error('description') <span class="text-danger text-xs">{{ $message }}</span> @enderror
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary rounded-pill px-4" wire:click="$set('showEditModal', false)">Cancel</button>
-                        <button type="submit" class="btn btn-primary rounded-pill px-4">
-                            <i class="bi bi-check-circle me-2"></i>Update
+                    <div class="modal-footer border-0 bg-light-soft p-4">
+                        <button type="button" class="btn btn-secondary px-4" wire:click="$set('{{ $showAddModal ? 'showAddModal' : 'showEditModal' }}', false)">Cancel</button>
+                        <button type="submit" class="btn btn-primary px-5 shadow-premium">
+                            {{ $showAddModal ? 'Create Category' : 'Save Changes' }}
                         </button>
                     </div>
                 </form>
@@ -182,30 +137,22 @@
 
     <!-- Delete Confirmation Modal -->
     @if($showDeleteModal)
-    <div class="modal fade show d-block" tabindex="-1">
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title fw-bold">
-                        <i class="bi bi-exclamation-triangle me-2"></i>Confirm Deletion
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" wire:click="$set('showDeleteModal', false)" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-0">Are you sure you want to delete this category? This action cannot be undone.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary rounded-pill px-4" wire:click="$set('showDeleteModal', false)">Cancel</button>
-                    <button type="button" class="btn btn-danger rounded-pill px-4" wire:click="delete">
-                        <i class="bi bi-trash me-2"></i>Delete
-                    </button>
+            <div class="modal-content border-0 shadow-premium rounded-xl overflow-hidden">
+                <div class="modal-body p-5 text-center">
+                    <div class="icon-shape icon-xl bg-danger-soft text-danger mb-4 mx-auto rounded-circle">
+                        <i class="bi bi-exclamation-triangle fs-1"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Delete Category?</h4>
+                    <p class="text-muted mb-4">Are you sure you want to delete this category? All products under this category might become uncategorized. This action is irreversible.</p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button class="btn btn-light-soft px-4" wire:click="$set('showDeleteModal', false)">No, Keep it</button>
+                        <button class="btn btn-danger px-4 shadow-danger" wire:click="delete">Yes, Delete now</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     @endif
 </div>
-
-@push('styles')
-@include('components.admin-styles')
-@endpush
