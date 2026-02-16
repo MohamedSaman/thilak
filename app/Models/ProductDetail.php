@@ -16,6 +16,7 @@ class ProductDetail extends Model
         'image_url',
         'supplier_price',
         'selling_price',
+        'mrp_price',
         'stock_quantity',
         'damage_quantity',
         'sold',

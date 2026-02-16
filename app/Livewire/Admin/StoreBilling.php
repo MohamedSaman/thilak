@@ -213,6 +213,7 @@ class StoreBilling extends Component
                 'brand' => $item->product->brand->name ?? 'N/A',
                 'image' => $item->product->image,
                 'price' => $item->price,
+                'mrp_price' => $item->product->mrp_price,
                 'stock_quantity' => $item->product->stock_quantity + $item->quantity, // Add back the sold quantity
             ];
             $this->quantities[$productId] = $item->quantity;
@@ -310,6 +311,7 @@ class StoreBilling extends Component
                     'image' => $product->image ?? null,
                     'image_url' => $product->image_url ?? null,
                     'price' => $product->selling_price,
+                    'mrp_price' => $product->mrp_price,
                     'stock_quantity' => $product->stock_quantity,
                 ]
             ];
@@ -985,6 +987,7 @@ class StoreBilling extends Component
                     'name' => $item['name'],
                     'quantity' => $quantity,
                     'price' => $price,
+                    'mrp_price' => $item['mrp_price'] ?? null,
                     'discount' => $itemDiscount,
                     'total' => $total,
                 ];

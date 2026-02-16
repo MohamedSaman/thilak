@@ -63,6 +63,7 @@
                         <th class="py-3">Category</th>
                         <th class="py-3">Brand</th>
                         <th class="py-3">Supplier Price</th>
+                        <th class="py-3">MRP Price</th>
                         <th class="py-3">Selling Price</th>
 
                         <th class="py-3">Quantity Inhand</th>
@@ -91,6 +92,7 @@
                         <td class="py-3">{{ $product->category->name ?? 'N/A' }}</td>
                         <td class="py-3">{{ $product->brand->brand_name ?? 'N/A' }}</td>
                         <td class="py-3">Rs. {{ number_format($product->supplier_price, 2) }}</td>
+                        <td class="py-3">{{ $product->mrp_price ? 'Rs. ' . number_format($product->mrp_price, 2) : '-' }}</td>
                         <td class="py-3">Rs. {{ number_format($product->selling_price, 2) }}</td>
                         <td class="py-3 text-center">
                             @php
@@ -139,7 +141,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="{{ 9 + count($fieldKeys) }}" class="text-center py-4" style="color: #233D7F;">
+                        <td colspan="{{ 10 + count($fieldKeys) }}" class="text-center py-4" style="color: #233D7F;">
                             <i class="bi bi-exclamation-circle me-2"></i>No products found.
                         </td>
                     </tr>
@@ -241,6 +243,17 @@
                                         class="form-control border-2 shadow-sm" style=" color: #233D7F;" step="0.01">
                                 </div>
                                 @error('selling_price') <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="mrp_price" class="form-label fw-medium" style="color: #233D7F;">MRP
+                                    Price</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-2 border-end-0">Rs.</span>
+                                    <input type="number" id="mrp_price" wire:model="mrp_price"
+                                        class="form-control border-2 shadow-sm" style=" color: #233D7F;" step="0.01">
+                                </div>
+                                @error('mrp_price') <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6">
@@ -395,6 +408,21 @@
                                             step="0.01">
                                     </div>
                                     @error('selling_price') <div class="text-danger small mt-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="edit_mrp_price" class="form-label fw-medium"
+                                        style="color: #233D7F;">MRP Price</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-2 border-end-0"
+                                            style="">Rs.</span>
+                                        <input type="number" id="edit_mrp_price" wire:model="mrp_price"
+                                            class="form-control border-2 shadow-sm" style=" color: #233D7F;"
+                                            step="0.01">
+                                    </div>
+                                    @error('mrp_price') <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
@@ -730,6 +758,12 @@
                                                 class="bi bi-wallet2 text-primary me-2"></i>Selling Price:</span>
                                         <span class="fw-semibold text-dark">Rs.{{ number_format($this->viewSellingPrice
                                             ?? 0, 2) }}</span>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <span class="fw-medium text-secondary"><i
+                                                class="bi bi-tag text-primary me-2"></i>MRP Price:</span>
+                                        <span class="fw-semibold text-dark">{{ $this->viewMrpPrice ? 'Rs.' . number_format($this->viewMrpPrice, 2) : '-' }}</span>
                                     </div>
 
                                     <div class="col-4">

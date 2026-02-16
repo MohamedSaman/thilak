@@ -20,7 +20,7 @@ class Products extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
-    public $product_code, $category_id, $brand_id, $product_name, $image_url, $supplier_price, $selling_price, $sold, $status;
+    public $product_code, $category_id, $brand_id, $product_name, $image_url, $supplier_price, $selling_price, $mrp_price, $sold, $status;
     public $search = '';
     public $categories;
     public $stock_quantity = 0;
@@ -48,6 +48,7 @@ class Products extends Component
     public $viewProductName;
     public $viewSupplierPrice;
     public $viewSellingPrice;
+    public $viewMrpPrice;
     public $viewStockQuantity;
     public $viewDamageQuantity;
     public $viewSoldQuantity;
@@ -213,6 +214,7 @@ class Products extends Component
                 'image_url' => $this->image_url,
                 'supplier_price' => $this->supplier_price,
                 'selling_price' => $this->selling_price,
+                'mrp_price' => $this->mrp_price,
                 'stock_quantity' => $totalQuantity - $this->damage_quantity,
                 'damage_quantity' => $this->damage_quantity,
                 'status' => 'Available',
@@ -240,6 +242,7 @@ class Products extends Component
         $this->image_url = $product->image_url;
         $this->supplier_price = $product->supplier_price;
         $this->selling_price = $product->selling_price;
+        $this->mrp_price = $product->mrp_price;
         $this->stock_quantity = $product->stock_quantity;
         $this->damage_quantity = $product->damage_quantity;
         $this->sold = $product->sold;
@@ -282,6 +285,7 @@ class Products extends Component
             'image_url'        => $this->image_url,
             'supplier_price'   => $this->supplier_price,
             'selling_price'    => $this->selling_price,
+            'mrp_price'        => $this->mrp_price,
             'stock_quantity'   => $this->stock_quantity,
             'damage_quantity'  => $this->damage_quantity,
             'sold'             => $this->sold,
@@ -326,6 +330,7 @@ class Products extends Component
         $this->viewProductName = $product->product_name;
         $this->viewSupplierPrice = $product->supplier_price;
         $this->viewSellingPrice = $product->selling_price;
+        $this->viewMrpPrice = $product->mrp_price;
         $this->viewStockQuantity = $product->stock_quantity;
         $this->viewDamageQuantity = $product->damage_quantity;
         $this->viewSoldQuantity = $product->sold;
@@ -350,6 +355,7 @@ class Products extends Component
             'image_url',
             'supplier_price',
             'selling_price',
+            'mrp_price',
             'stock_quantity',
             'damage_quantity',
             'sold',

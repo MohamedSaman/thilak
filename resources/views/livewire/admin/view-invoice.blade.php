@@ -267,9 +267,9 @@
                     <div class="receipt-container">
                         <div class="text-center mb-4">
                             <h3 class="mb-1 fw-bold tracking-tight" style="color: #233D7F;">THILAK HARDWARE</h3>
-                            <h5 class="mb-1 fw-medium" style="color: #233D7F;"> for <br> MARUTI-LEYLAND - MAHINDRA-TATA-ALTO</h5>
-                            <p class="mb-0 text-muted small" style="color: #6B7280;">NO. 397/, DUNU ELA, THIHARIYA, KALAGEDIHENA</p>
-                            <p class="mb-0 text-muted small" style="color: #6B7280;">Phone: 077 6718838</p>
+                            <h5 class="mb-1 fw-medium" style="color: #233D7F;">Stone, Sand, Cement all types of building items<br>are provided at affordable prices</h5>
+                            <p class="mb-0 text-muted small" style="color: #6B7280;">NO 569/17A, THIHARIYA, KALAGEDIHENA</p>
+                            <p class="mb-0 text-muted small" style="color: #6B7280;">Phone: 077 9089961</p>
                             <hr style="border: 2px solid #233D7F;">
                         </div>
 
@@ -752,8 +752,7 @@
                 <body>
                     <div>
                         <div class="company-name">THILAK HARDWARE</div>
-                        <div class="company-address">MARUTI - LEYLAND - MAHINDRA - TATA - ALTO</div>
-                        <div class="company-address">Phone: 077 6718838</div>
+                        <div class="company-address">Phone: 077 9089961</div>
                         <div class="dashed"></div>
 
                         <table>
@@ -770,8 +769,7 @@
                         <div class="dashed"></div>
                         <div class="footer">
                             <div>*****ORIGINAL*****</div>
-                            <div>Please draw the cheque in favor of M.A.Z Ahamed</div>
-                            <div>Peoples Bank Acc No: 2781-0010-2421-207</div>
+                            <div>Thank you for your purchase!</div>
                         </div>
                     </div>
                 </body>
@@ -818,7 +816,7 @@
                         margin-bottom: 5px;
                     }
                     .company-address {
-                        font-size: 18px;
+                        font-size: 14px;
                         color: #000;
                         margin: 3px 0;
                     }
@@ -944,9 +942,9 @@
                     <div class="receipt-container">
                         <div class="company-header">
                             <div class="company-name">THILAK HARDWARE</div>
-                            <div class="company-address"> for</div>
-                            <div class="company-address">MARUTI - LEYLAND - MAHINDRA - TATA - ALTO</div>
-                            <div class="company-address">Phone: 077 6718838 | Address: No. 397/3, Dunu Ela, Thihariya, Kalagedihena.</div>
+                            
+                                    <div class="company-address">Stone, Sand, Cement all types of building items<br>are provided at affordable prices</div>
+                                    <div class="company-address">Phone: 077 9089961 | Address: NO 569/17A, THIHARIYA, KALAGEDIHENA.</div>
                         </div>
                         
                         <div class="info-row">
@@ -983,9 +981,6 @@
                                 </div>
                             </div>
                             <p class="original">*****ORIGINAL*****</p>
-                            <p>Please draw the cheque in favor of M.A.Z Ahamed</p>
-                            <p class="bank-info">Peoples Bank Acc No: 2781-0010-2421-207</p>
-                            <p class="return-policy">||RETURN GOODS WILL BE ACCEPTED WITHIN 30 DAYS ONLY||</p>
                         </div>
                     </div>
                 </body>

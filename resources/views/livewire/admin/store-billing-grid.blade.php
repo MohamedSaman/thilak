@@ -216,6 +216,9 @@
 
                                 <!-- Price -->
                                 <div class="text-right flex-shrink-0">
+                                    @if($result->mrp_price)
+                                    <p class="text-xs text-gray-400 line-through">MRP: Rs. {{ number_format($result->mrp_price, 2) }}</p>
+                                    @endif
                                     <p class="text-sm font-bold text-orange-500">Rs. {{ number_format($result->selling_price, 2) }}</p>
                                 </div>
                             </div>
@@ -270,13 +273,20 @@
                             </div>
                             <div class="p-3 flex flex-col flex-1">
                                 <h4 class="text-sm font-semibold text-gray-900 mb-1 line-clamp-1">{{ $result->product_name }}</h4>
-                                <div class="mt-auto flex items-center justify-between">
-                                    <p class="text-lg font-bold text-blue-600">Rs {{ number_format($result->selling_price, 2) }}</p>
-                                    @php
-                                    $stockQty = $result->stock_quantity ?? 0;
-                                    $stockClass = $stockQty > 10 ? 'text-green-600 font-bold' : ($stockQty > 0 ? 'text-orange-500 font-semibold' : 'text-red-600 font-bold');
-                                    @endphp
-                                    <p class="text-sm {{ $stockClass }}">{{ $stockQty }} units</p>
+                                <div class="mt-auto">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <div>
+                                            @if($result->mrp_price)
+                                            <p class="text-xs text-gray-400 line-through">MRP: Rs {{ number_format($result->mrp_price, 2) }}</p>
+                                            @endif
+                                            <p class="text-lg font-bold text-blue-600">Rs {{ number_format($result->selling_price, 2) }}</p>
+                                        </div>
+                                        @php
+                                        $stockQty = $result->stock_quantity ?? 0;
+                                        $stockClass = $stockQty > 10 ? 'text-green-600 font-bold' : ($stockQty > 0 ? 'text-orange-500 font-semibold' : 'text-red-600 font-bold');
+                                        @endphp
+                                        <p class="text-sm {{ $stockClass }}">{{ $stockQty }} units</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -345,6 +355,9 @@
                                 <div class="flex items-start justify-between gap-2 mb-1">
                                     <div class="flex-1">
                                         <h5 class="text-sm font-bold text-gray-900 truncate">{{ $item['name'] }}</h5>
+                                        @if(isset($item['mrp_price']) && $item['mrp_price'])
+                                        <p class="text-xs text-gray-400">MRP: Rs. {{ number_format($item['mrp_price'], 2) }}</p>
+                                        @endif
                                     </div>
                                     <button wire:click="removeFromCart({{ $id }})" class="text-gray-400 hover:text-red-500 p-0 flex-shrink-0">
                                         <span class="material-symbols-outlined text-lg">delete</span>
@@ -756,9 +769,9 @@
                         <div class="receipt-container">
                             <div class="text-center mb-4">
                                 <h3 class="mb-1 fw-bold" style="color: #233D7F;">THILAK HARDWARE</h3>
-                                <h5 class="mb-1 fw-medium" style="color: #233D7F;"></h5>
-                                <p class="mb-0 text-muted small">NO. 397/3, DUNU ELA, THIHARIYA, KALAGEDIHENA</p>
-                                <p class="mb-0 text-muted small">Phone: 077 6718838</p>
+                                <h5 class="mb-1 fw-medium" style="color: #233D7F;">Stone, Sand, Cement all types of building items are provided at affordable prices</h5>
+                                <p class="mb-0 text-muted small">NO 569/17A, THIHARIYA, KALAGEDIHENA </p>
+                                <p class="mb-0 text-muted small">Phone: 077 9089961</p>
                                 <hr style="border: 2px solid #233D7F;">
                             </div>
 
@@ -781,8 +794,8 @@
                                             <th>No</th>
                                             <th>Item</th>
                                             <th>Qty</th>
+                                            <th>MRP</th>
                                             <th>Price</th>
-                                            <th>Dis/unit</th>
                                             <th>Total</th>
                                         </tr>
                                     </thead>
@@ -793,8 +806,8 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $item['name'] ?? 'Unknown Item' }}</td>
                                             <td>{{ $item['quantity'] ?? 0 }}</td>
+                                            <td>{{ isset($item['mrp_price']) && $item['mrp_price'] ? number_format($item['mrp_price'], 2) : '-' }}</td>
                                             <td>{{ number_format($item['price'] ?? 0, 2) }}</td>
-                                            <td>{{ number_format($item['discount'] ?? 0, 2) }}</td>
                                             <td> {{ number_format($item['total'] ?? 0, 2) }}</td>
                                         </tr>
                                         @endforeach
@@ -1094,7 +1107,7 @@
                     <body>
                         <div>
                             <div class="company-name">THILAK HARDWARE</div>
-                            <div class="company-address">MARUTI - LEYLAND - MAHINDRA - TATA - ALTO</div>
+                            <div class="company-address"></div>
                             <div class="company-address">Phone: 077 6718838</div>
                             <div class="dashed"></div>
 
@@ -1161,7 +1174,7 @@
                             margin-bottom: 5px;
                         }
                         .company-address {
-                            font-size: 18px;
+                            font-size: 14px;
                             color: #000;
                             margin: 3px 0;
                         }
@@ -1305,9 +1318,8 @@
                         <div class="receipt-container">
                             <div class="company-header">
                                 <div class="company-name">THILAK HARDWARE</div>
-                                <div class="company-address"> for</div>
-                                <div class="company-address">MARUTI - LEYLAND - MAHINDRA - TATA - ALTO</div>
-                                <div class="company-address">Phone: 077 6718838 | Address: No. 397/3, Dunu Ela, Thihariya, Kalagedihena.</div>
+                                <div class="company-address">Stone, Sand, Cement all types of building items<br>are provided at affordable prices</div>
+                                <div class="company-address">Phone: 077 9089961 | Address: NO 569/17A, THIHARIYA, KALAGEDIHENA.</div>
                             </div>
 
                             <div class="info-row">
@@ -1344,9 +1356,6 @@
                                     </div>
                                 </div>
                                 <p class="original">*****ORIGINAL*****</p>
-                                <p>Please draw the cheque in favor of M.A.Z Ahamed</p>
-                                <p class="bank-info">Peoples Bank Acc No: 2781-0010-2421-207</p>
-                                <p class="return-policy">||RETURN GOODS WILL BE ACCEPTED WITHIN 30 DAYS ONLY||</p>
                             </div>
                         </div>
                     </body>
