@@ -512,7 +512,12 @@ class Reports extends Component
         ];
 
         $pdf = \PDF::loadView('reports.pdf', compact(
-            'data', 'reportType', 'reportTitle', 'dateFrom', 'dateTo', 'stats'
+            'data',
+            'reportType',
+            'reportTitle',
+            'dateFrom',
+            'dateTo',
+            'stats'
         ));
 
         $pdf->setPaper('a4', 'landscape');

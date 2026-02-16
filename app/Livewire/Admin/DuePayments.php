@@ -47,39 +47,40 @@ class DuePayments extends Component
     public $chequeAmount = '';
     public $chequeDate = '';
     public $cheques = [];
-    public $banks=[];
+    public $banks = [];
 
     public $duePayment;
     protected $listeners = ['refreshPayments' => '$refresh'];
 
-    public function mount() {
+    public function mount()
+    {
         $this->loadBanks();
     }
 
     public function loadBanks()
     {
         $this->banks = [
-            'Bank of Ceylon (BOC)'=>'Bank of Ceylon (BOC)',
-            'Commercial Bank of Ceylon (ComBank)'=>'Commercial Bank of Ceylon (ComBank)',
-            'Hatton National Bank (HNB)'=>'Hatton National Bank (HNB)',
-            'People\'s Bank'=>'People\'s Bank',
-            'Sampath Bank'=>'Sampath Bank',
-            'National Development Bank (NDB)'=>'National Development Bank (NDB)',
-            'DFCC Bank'=>'DFCC Bank',
-            'Nations Trust Bank (NTB)'=>'Nations Trust Bank (NTB)',
-            'Seylan Bank'=>'Seylan Bank',
-            'Amana Bank'=>'Amana Bank',
-            'Cargills Bank'=>'Cargills Bank',
-            'Pan Asia Banking Corporation'=>'Pan Asia Banking Corporation',
-            'Union Bank of Colombo'=>'Union Bank of Colombo',
-            'Bank of China Ltd'=>'Bank of China Ltd',
-            'Citibank, N.A.'=>'Citibank, N.A.',
-            'Habib Bank Ltd'=>'Habib Bank Ltd',
-            'Indian Bank'=>'Indian Bank',
-            'Indian Overseas Bank'=>'Indian Overseas Bank',
-            'MCB Bank Ltd'=>'MCB Bank Ltd',
-            'Public Bank Berhad'=>'Public Bank Berhad',
-            'Standard Chartered Bank'=>'Standard Chartered Bank',
+            'Bank of Ceylon (BOC)' => 'Bank of Ceylon (BOC)',
+            'Commercial Bank of Ceylon (ComBank)' => 'Commercial Bank of Ceylon (ComBank)',
+            'Hatton National Bank (HNB)' => 'Hatton National Bank (HNB)',
+            'People\'s Bank' => 'People\'s Bank',
+            'Sampath Bank' => 'Sampath Bank',
+            'National Development Bank (NDB)' => 'National Development Bank (NDB)',
+            'DFCC Bank' => 'DFCC Bank',
+            'Nations Trust Bank (NTB)' => 'Nations Trust Bank (NTB)',
+            'Seylan Bank' => 'Seylan Bank',
+            'Amana Bank' => 'Amana Bank',
+            'Cargills Bank' => 'Cargills Bank',
+            'Pan Asia Banking Corporation' => 'Pan Asia Banking Corporation',
+            'Union Bank of Colombo' => 'Union Bank of Colombo',
+            'Bank of China Ltd' => 'Bank of China Ltd',
+            'Citibank, N.A.' => 'Citibank, N.A.',
+            'Habib Bank Ltd' => 'Habib Bank Ltd',
+            'Indian Bank' => 'Indian Bank',
+            'Indian Overseas Bank' => 'Indian Overseas Bank',
+            'MCB Bank Ltd' => 'MCB Bank Ltd',
+            'Public Bank Berhad' => 'Public Bank Berhad',
+            'Standard Chartered Bank' => 'Standard Chartered Bank',
         ];
     }
 
@@ -245,7 +246,7 @@ class DuePayments extends Component
                 Livewire.dispatch("closeModal", "payment-detail-modal");
                 window.location.reload();
             });');
-            
+
             $this->reset([
                 'paymentDetail',
                 'duePaymentMethod',
@@ -258,7 +259,6 @@ class DuePayments extends Component
                 'chequeDate',
                 'cheques'
             ]);
-
         } catch (Exception $e) {
             DB::rollBack();
             $this->js('swal.fire("Error", "Error processing payment: ' . addslashes($e->getMessage()) . '", "error")');

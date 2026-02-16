@@ -100,7 +100,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <!-- Pagination -->
             <div class="mt-3">
                 {{ $categories->links('livewire::bootstrap') }}
@@ -207,5 +207,5 @@
 </div>
 
 @push('styles')
-    @include('components.admin-styles')
+@include('components.admin-styles')
 @endpush

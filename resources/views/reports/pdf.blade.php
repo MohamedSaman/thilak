@@ -258,17 +258,17 @@
 
     <div class="meta">
         <div class="meta-left">
-            <strong>Period:</strong> 
+            <strong>Period:</strong>
             @if($dateFrom && $dateFrom !== 'All')
-                {{ \Carbon\Carbon::parse($dateFrom)->format('d M y') }}
+            {{ \Carbon\Carbon::parse($dateFrom)->format('d M y') }}
             @else
-                All
+            All
             @endif
             -
             @if($dateTo && $dateTo !== 'All')
-                {{ \Carbon\Carbon::parse($dateTo)->format('d M y') }}
+            {{ \Carbon\Carbon::parse($dateTo)->format('d M y') }}
             @else
-                All
+            All
             @endif
         </div>
         <div class="meta-right">
