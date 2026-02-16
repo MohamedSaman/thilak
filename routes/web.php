@@ -58,6 +58,25 @@ Route::post('/logout', function (Request $request) {
 // Routes that require authentication
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
 
+    // Generic dashboard route: redirect authenticated users to their role-specific dashboard
+    Route::get('/dashboard', function () {
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('welcome');
+        }
+
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if ($user->isStaff()) {
+            return redirect()->route('staff.dashboard');
+        }
+
+        return redirect()->route('welcome');
+    })->name('dashboard');
+
     // !! Admin routes
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
