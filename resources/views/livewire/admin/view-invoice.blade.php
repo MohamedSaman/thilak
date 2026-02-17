@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="col-md-6 text-md-end mt-3 mt-md-0">
-             <div class="d-flex align-items-center justify-content-md-end gap-2">
+            <div class="d-flex align-items-center justify-content-md-end gap-2">
                 <button wire:click="exportCSV" class="btn btn-white shadow-premium text-success">
                     <i class="bi bi-file-earmark-spreadsheet me-2"></i>CSV
                 </button>
@@ -28,7 +28,7 @@
     <div class="row g-4 mb-5">
         <div class="col-xl-3 col-sm-6">
             <div class="stat-card p-4">
-                 <div class="d-flex justify-content-between mb-3">
+                <div class="d-flex justify-content-between mb-3">
                     <div class="icon-shape icon-lg bg-indigo-soft text-indigo">
                         <i class="bi bi-receipt"></i>
                     </div>
@@ -43,7 +43,7 @@
                 <span class="text-xs text-muted">Lifetime transactions</span>
             </div>
         </div>
-        
+
         <div class="col-xl-3 col-sm-6">
             <div class="stat-card p-4">
                 <div class="d-flex justify-content-between mb-3">
@@ -127,7 +127,7 @@
                                 <option value="partial">Partial</option>
                             </select>
                         </div>
-                         <button class="btn btn-secondary btn-sm rounded-lg" wire:click="resetFilters" title="Reset Filters">
+                        <button class="btn btn-secondary btn-sm rounded-lg" wire:click="resetFilters" title="Reset Filters">
                             <i class="bi bi-arrow-counterclockwise"></i>
                         </button>
                     </div>
@@ -172,11 +172,11 @@
                         </td>
                         <td class="text-center">
                             @php
-                                $statusClass = [
-                                    'paid' => 'badge-success-soft',
-                                    'partial' => 'badge-warning-soft',
-                                    'unpaid' => 'badge-danger-soft'
-                                ][$sale->payment_status] ?? 'badge-secondary-soft';
+                            $statusClass = [
+                            'paid' => 'badge-success-soft',
+                            'partial' => 'badge-warning-soft',
+                            'unpaid' => 'badge-danger-soft'
+                            ][$sale->payment_status] ?? 'badge-secondary-soft';
                             @endphp
                             <span class="badge {{ $statusClass }} px-3 py-2 rounded-pill text-xs">
                                 {{ strtoupper($sale->payment_status) }}
@@ -228,7 +228,7 @@
                 <div class="modal-body p-0" id="invoiceContent">
                     @if($saleDetails)
                     <div class="p-5">
-                         <div class="text-center mb-5">
+                        <div class="text-center mb-5">
                             <h2 class="fw-bold text-primary mb-1">THILAK HARDWARE</h2>
                             <p class="text-muted mb-0 small">Stone, Sand, Cement and all types of building materials</p>
                             <p class="text-muted mb-0">NO 569/17A, THIHARIYA, KALAGEDIHENA.</p>
@@ -239,11 +239,11 @@
                             <div class="col-md-6 border-end">
                                 <span class="text-xs text-muted text-uppercase fw-bold tracking-wider">Customer Details</span>
                                 @if ($saleDetails['sale']->customer)
-                                    <h6 class="fw-bold mt-2 mb-1">{{ $saleDetails['sale']->customer->name }}</h6>
-                                    <p class="text-sm text-muted mb-0">{{ $saleDetails['sale']->customer->address ?? 'N/A' }}</p>
-                                    <p class="text-sm text-muted">{{ $saleDetails['sale']->customer->phone ?? 'N/A' }}</p>
+                                <h6 class="fw-bold mt-2 mb-1">{{ $saleDetails['sale']->customer->name }}</h6>
+                                <p class="text-sm text-muted mb-0">{{ $saleDetails['sale']->customer->address ?? 'N/A' }}</p>
+                                <p class="text-sm text-muted">{{ $saleDetails['sale']->customer->phone ?? 'N/A' }}</p>
                                 @else
-                                    <h6 class="fw-bold mt-2 mb-1">Walk-in Customer</h6>
+                                <h6 class="fw-bold mt-2 mb-1">Walk-in Customer</h6>
                                 @endif
                             </div>
                             <div class="col-md-6 ps-md-4">
@@ -341,48 +341,447 @@
         });
 
         window.printInvoice = function() {
-            const format = document.getElementById('printSizeSelectInvoice').value;
-            const content = document.getElementById('invoiceContent').cloneNode(true);
-            const printWindow = window.open('', '_blank', 'width=1000,height=700');
-
-            let style = '';
-            if (format === 'thermal') {
-                style = `
-                    @page { size: 80mm auto; margin: 0; }
-                    body { font-family: 'Courier New', monospace; font-size: 11px; padding: 5mm; width: 70mm; }
-                    h2 { font-size: 14px; }
-                    table { font-size: 10px; width: 100%; border-bottom: 1px dashed #000; }
-                    .ps-2, .pe-2 { padding: 0 !important; }
-                    .glass-card { background: none !important; border: none !important; padding: 0 !important; }
-                    .col-md-5 { width: 100% !important; }
-                `;
-            } else {
-                style = `
-                    @page { size: A4; margin: 20mm; }
-                    body { font-family: 'Inter', sans-serif; padding: 20px; color: #1a2d5e; }
-                    .report-header { border-bottom: 2px solid #233d7f; margin-bottom: 30px; }
-                    table { width: 100%; border-collapse: collapse; }
-                    th { background-color: #f8faff !important; border: 1px solid #ddd; padding: 8px; }
-                    td { border: 1px solid #ddd; padding: 8px; }
-                `;
+            const invoiceContent = document.querySelector('#invoiceContent');
+            if (!invoiceContent) {
+                alert('Invoice content not found.');
+                return;
             }
 
-            const htmlContent = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Invoice Receipt</title>
-                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-                    <style>${style}</style>
-                </head>
-                <body>
-                    ${content.innerHTML}
-                    <script>window.print();<\/script>
-                </body>
-                </html>
-            `;
-            printWindow.document.write(htmlContent);
+            // Determine format (A4 or thermal)
+            const format = document.getElementById('printSizeSelectInvoice')?.value || localStorage.getItem('printFormat') || 'A4';
+
+            // Extract customer information
+            let customerName = 'Walk-in Customer';
+            let customerAddress = '';
+            let customerPhone = '';
+
+            const customerDetailsDiv = invoiceContent.querySelector('.col-md-6.border-end');
+            if (customerDetailsDiv) {
+                const customerNameEl = customerDetailsDiv.querySelector('h6.fw-bold');
+                if (customerNameEl) {
+                    customerName = customerNameEl.textContent.trim();
+                }
+
+                const customerInfoPs = customerDetailsDiv.querySelectorAll('p.text-sm.text-muted');
+                if (customerInfoPs.length > 0) {
+                    customerAddress = customerInfoPs[0].textContent.trim();
+                }
+                if (customerInfoPs.length > 1) {
+                    customerPhone = customerInfoPs[1].textContent.trim();
+                }
+            }
+
+            // Extract invoice information
+            let invoiceNumber = '';
+            let date = '';
+
+            const invoiceInfoDiv = invoiceContent.querySelector('.col-md-6.ps-md-4');
+            if (invoiceInfoDiv) {
+                const invoiceElements = invoiceInfoDiv.querySelectorAll('.d-flex');
+                invoiceElements.forEach(el => {
+                    const text = el.textContent;
+                    if (text.includes('Invoice No:')) {
+                        const spanEl = el.querySelector('span.fw-bold');
+                        if (spanEl) invoiceNumber = spanEl.textContent.trim();
+                    } else if (text.includes('Date:')) {
+                        const spanEl = el.querySelector('span.fw-bold');
+                        if (spanEl) date = spanEl.textContent.trim();
+                    }
+                });
+            }
+
+            // Extract items from table
+            const itemsTableBody = invoiceContent.querySelector('.table.table-sm tbody');
+            let itemsArray = [];
+            if (itemsTableBody) {
+                const rows = itemsTableBody.querySelectorAll('tr');
+                rows.forEach((row, index) => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length >= 4) {
+                        const itemName = cells[0].querySelector('.fw-bold')?.textContent.trim() || '';
+                        const qty = cells[1].textContent.trim();
+                        const price = cells[2].textContent.trim();
+                        const total = cells[3].textContent.trim();
+                        itemsArray.push({
+                            no: index + 1,
+                            item: itemName,
+                            qty: qty,
+                            mrp: price,
+                            price: price,
+                            total: total
+                        });
+                    }
+                });
+            }
+
+            // Extract totals
+            let subtotal = '';
+            let discount = '';
+            let returns = '';
+            let grandTotal = '';
+
+            const totalsSection = invoiceContent.querySelector('.glass-card.p-4.bg-light-soft');
+            if (totalsSection) {
+                const totalRows = totalsSection.querySelectorAll('.d-flex');
+                totalRows.forEach(row => {
+                    const text = row.textContent;
+                    if (text.includes('Subtotal:')) {
+                        const valueEl = row.querySelector('span.fw-bold');
+                        if (valueEl) subtotal = valueEl.textContent.trim();
+                    } else if (text.includes('Discount:')) {
+                        const valueEl = row.querySelector('span');
+                        if (valueEl) discount = valueEl.textContent.trim();
+                    } else if (text.includes('Returns:')) {
+                        const valueEl = row.querySelector('span');
+                        if (valueEl) returns = valueEl.textContent.trim();
+                    } else if (text.includes('Grand Total:')) {
+                        const valueEl = row.querySelector('h5.text-primary');
+                        if (valueEl) grandTotal = valueEl.textContent.trim();
+                    }
+                });
+            }
+
+            // Build items table HTML
+            let itemsTableHTML = '<table style="width:100%; border-collapse:collapse; margin:5px 0 20px;">';
+            itemsTableHTML += '<thead><tr>';
+            itemsTableHTML += '<th style="border:1px dashed #000; padding:3px; background-color:#f0f0f0;">No</th>';
+            itemsTableHTML += '<th style="border:1px dashed #000; padding:3px; background-color:#f0f0f0;">Item</th>';
+            itemsTableHTML += '<th style="border:1px dashed #000; padding:3px; background-color:#f0f0f0; text-align:center;">Qty</th>';
+            itemsTableHTML += '<th style="border:1px dashed #000; padding:3px; background-color:#f0f0f0; text-align:right;">MRP</th>';
+            itemsTableHTML += '<th style="border:1px dashed #000; padding:3px; background-color:#f0f0f0; text-align:right;">Price</th>';
+            itemsTableHTML += '<th style="border:1px dashed #000; padding:3px; background-color:#f0f0f0; text-align:right;">Total</th>';
+            itemsTableHTML += '</tr></thead><tbody>';
+
+            itemsArray.forEach(item => {
+                itemsTableHTML += '<tr>';
+                itemsTableHTML += `<td style="border:1px dashed #000; padding:3px; text-align:center;">${item.no}</td>`;
+                itemsTableHTML += `<td style="border:1px dashed #000; padding:3px;">${item.item}</td>`;
+                itemsTableHTML += `<td style="border:1px dashed #000; padding:3px; text-align:center;">${item.qty}</td>`;
+                itemsTableHTML += `<td style="border:1px dashed #000; padding:3px; text-align:right;">${item.mrp}</td>`;
+                itemsTableHTML += `<td style="border:1px dashed #000; padding:3px; text-align:right;">${item.price}</td>`;
+                itemsTableHTML += `<td style="border:1px dashed #000; padding:3px; text-align:right;">${item.total}</td>`;
+                itemsTableHTML += '</tr>';
+            });
+
+            // Add summary rows
+            if (subtotal) {
+                itemsTableHTML += '<tr>';
+                itemsTableHTML += '<td colspan="5" style="border:1px dashed #000; padding:3px; text-align:right; font-weight:bold;">Subtotal:</td>';
+                itemsTableHTML += `<td style="border:1px dashed #000; padding:3px; text-align:right; font-weight:bold;">${subtotal}</td>`;
+                itemsTableHTML += '</tr>';
+            }
+
+            if (discount && discount !== '-Rs.0.00') {
+                itemsTableHTML += '<tr>';
+                itemsTableHTML += '<td colspan="5" style="border:1px dashed #000; padding:3px; text-align:right; font-weight:bold;">Discount:</td>';
+                itemsTableHTML += `<td style="border:1px dashed #000; padding:3px; text-align:right; font-weight:bold;">${discount}</td>`;
+                itemsTableHTML += '</tr>';
+            }
+
+            if (returns && returns !== '-Rs.0.00') {
+                itemsTableHTML += '<tr>';
+                itemsTableHTML += '<td colspan="5" style="border:1px dashed #000; padding:3px; text-align:right; font-weight:bold;">Returns:</td>';
+                itemsTableHTML += `<td style="border:1px dashed #000; padding:3px; text-align:right; font-weight:bold;">${returns}</td>`;
+                itemsTableHTML += '</tr>';
+            }
+
+            if (grandTotal) {
+                itemsTableHTML += '<tr>';
+                itemsTableHTML += '<td colspan="5" style="border:1px dashed #000; padding:3px; text-align:right; font-weight:bold;">Grand Total:</td>';
+                itemsTableHTML += `<td style="border:1px dashed #000; padding:3px; text-align:right; font-weight:bold;">${grandTotal}</td>`;
+                itemsTableHTML += '</tr>';
+            }
+
+            itemsTableHTML += '</tbody></table>';
+
+            const printWindow = window.open('', '_blank', 'height=600,width=800');
+
+            if (format === 'thermal') {
+                // Compact styles for 80mm thermal paper
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Sales Receipt - ${invoiceNumber}</title>
+                        <style>
+                            *{margin:0;padding:0;box-sizing:border-box}
+                            @page { size: 80mm auto; margin: 3mm; }
+                            body{font-family: 'Courier New', monospace !important; padding:8px; font-size:12px; line-height:1.2; color:#000; width:78mm}
+                            .company-name{font-size:18px; font-weight:bold; text-align:center}
+                            .company-address{font-size:11px; text-align:center; margin-bottom:6px}
+                            .dashed{border-top:1px dashed #000; margin:6px 0}
+                            table{width:100%; border-collapse:collapse; font-size:11px}
+                            table td, table th{padding:3px; vertical-align:top; border:1px dashed #000}
+                            table th{background-color:#f0f0f0; font-weight:bold}
+                            .text-right{text-align:right}
+                            .text-center{text-align:center}
+                            .footer{margin-top:8px; font-size:11px; text-align:center}
+                            @media print{ body{padding:2mm} }
+                        </style>
+                    </head>
+                    <body>
+                        <div>
+                            <div class="company-name">THILAK HARDWARE</div>
+                            <div class="company-address">Phone: 077 9089961</div>
+                            <div class="dashed"></div>
+
+                            <table style="border:none;">
+                                <tr><td style="border:none; font-weight:bold;">Name:</td><td style="border:none;">${customerName}</td></tr>
+                                <tr><td style="border:none; font-weight:bold;">Address:</td><td style="border:none;">${customerAddress}</td></tr>
+                                <tr><td style="border:none; font-weight:bold;">Phone:</td><td style="border:none;">${customerPhone}</td></tr>
+                                <tr><td style="border:none; font-weight:bold;">Invoice:</td><td style="border:none;">${invoiceNumber}</td></tr>
+                                <tr><td style="border:none; font-weight:bold;">Date:</td><td style="border:none;">${date}</td></tr>
+                            </table>
+
+                            <div class="dashed"></div>
+
+                            ${itemsTableHTML}
+
+                            <div class="dashed"></div>
+                            <div class="footer">
+                                <div>*****ORIGINAL*****</div>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `);
+            } else {
+                // A4 (default) - use existing full layout
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Sales Receipt - ${invoiceNumber}</title>
+                        <style>
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
+                        @page { size: A4; margin: 1cm; }
+                        body { 
+                            font-family: 'Courier New', monospace !important; 
+                            padding: 20px;
+                            font-size: 14px;
+                            line-height: 1.4;
+                            color: #000;
+                            font-weight: bold;
+                        }
+                        .receipt-container {
+                            max-width: 800px;
+                            margin: 0 auto;
+                            padding: 0;
+                        }
+                        .company-header {
+                            text-align: center;
+                            margin-bottom: 5px;
+                            border-bottom: 2px dashed #000;
+                            padding-bottom: 15px;
+                            font-weight: bold;
+                        }
+                        .company-name {
+                            font-size: 28px;
+                            font-weight: bold;
+                            color: #000;
+                            margin-bottom: 5px;
+                        }
+                        .company-address {
+                            font-size: 14px;
+                            color: #000;
+                            margin: 3px 0;
+                        }
+                        .receipt-title {
+                            font-size: 14px;
+                            font-weight: bold;
+                            color: #000;
+                            text-align: right;
+                            margin: 5px 0;
+                            padding-bottom: 10px;
+                        }
+                        .info-row {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 2px;
+                        }
+                        .info-section {
+                            width: 48%;
+                            padding: 8px;
+                        }
+                        .info-section h6 {
+                            color: #000;
+                            font-weight: bold;
+                            padding-bottom: 4px;
+                            margin-bottom: 4px;
+                            font-size: 13px;
+                        }
+                        .info-section table {
+                            width: 100%;
+                            font-size: 14px;
+                            border: none;
+                        }
+                        .info-section td {
+                            padding: 2px 0;
+                            color: #000 !important;
+                            border: none;
+                        }
+                        .info-label {
+                            font-weight: bold;
+                            display: inline-block;
+                            width: 140px;
+                        }
+                        .info-value {
+                            display: inline-block;
+                        }
+                        .text-center { text-align: center; }
+                        .text-right { text-align: right; }
+                        .fw-bold { font-weight: bold; }
+                        .mb-1 { margin-bottom: 0.25rem; }
+                        .mb-2 { margin-bottom: 0.5rem; }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 5px 0 20px;
+                        }
+                        table th, table td {
+                            border: 1px dashed #000;
+                            padding: 3px;
+                            text-align: left;
+                            font-family: 'Courier New', monospace !important;
+                            color: #000 !important;
+                        }
+                        table th {
+                            background-color: #f0f0f0;
+                            font-weight: bold;
+                        }
+                        
+                        /* Footer Styling */
+                        .footer {
+                            text-align: center;
+                            margin-bottom: 100px;
+                            padding-top: 20px;
+                            color: #000;
+                            position: absolute;
+                            bottom: 20px;
+                            width: 100%;
+                        }
+                        
+                        .signature-row {
+                            display: flex;
+                            justify-content: space-around;
+                            margin-bottom: 5px;
+                            text-align: center;
+                        }
+                        
+                        .check {
+                            flex: 1;
+                            padding: 0 10px;
+                        }
+                        
+                        .check .signature-line {
+                            padding-bottom: 2px;
+                            min-height: 30px;
+                        }
+                        
+                        .check .label {
+                            font-size: 11px;
+                            font-weight: bold;
+                            color: #000 !important;
+                        }
+                        
+                        .footer p {
+                            margin: 0;
+                            font-size: 11px;
+                            color: #000 !important;
+                            font-weight: bold;
+                        }
+                        
+                        .footer .original {
+                            font-size: 12px;
+                            font-weight: bold;
+                            margin: 25px 0 0;
+                            letter-spacing: 2px;
+                        }
+                        
+                        .footer .bank-info {
+                            font-size: 11px;
+                            margin: 2px 0;
+                        }
+                        
+                        .footer .return-policy {
+                            font-size: 11px;
+                            margin-top: 5px;
+                            padding: 3px 0;
+                            font-weight: bold;
+                        }
+                        
+                        h3, h4, h5, h6, p, strong, span, td, th, div {
+                            font-family: 'Courier New', monospace !important;
+                            color: #000 !important;
+                        }
+                        
+                        @media print { 
+                            .no-print { display: none; }
+                            body { padding: 10px; }
+                            * { color: #000 !important; }
+                        }
+                    </style>
+                    </head>
+                    <body>
+                        <div class="receipt-container">
+                            <div class="company-header">
+                                <div class="company-name">THILAK HARDWARE</div>
+                                <div class="company-address">Stone, Sand, Cement all types of building items<br>are provided at affordable prices</div>
+                                <div class="company-address">Phone: 077 9089961 | Address: NO 569/17A, THIHARIYA, KALAGEDIHENA.</div>
+                            </div>
+
+                            <div class="info-row">
+                                <div class="info-section">
+                                    <table>
+                                        <tr><td>Name:</td><td>${customerName}</td></tr>
+                                        <tr><td>Address:</td><td>${customerAddress}</td></tr>
+                                        <tr><td>Phone:</td><td>${customerPhone}</td></tr>
+                                    </table>
+                                </div>
+                                <div class="info-section">
+                                    <table>
+                                        <tr><td>Invoice Number:</td><td>${invoiceNumber}</td></tr>
+                                        <tr><td>Date:</td><td>${date}</td></tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            ${itemsTableHTML}
+
+                            <div class="footer">
+                                <div class="signature-row">
+                                    <div class="check">
+                                        <div class="signature-line">...........................</div>
+                                        <div class="label">Receiver's Signature</div>
+                                    </div>
+                                    <div class="check">
+                                        <div class="signature-line">...........................</div>
+                                        <div class="label">Check By</div>
+                                    </div>
+                                    <div class="check">
+                                        <div class="signature-line">...........................</div>
+                                        <div class="label">Authorized Signature</div>
+                                    </div>
+                                </div>
+                                <p class="original">*****ORIGINAL*****</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `);
+            }
+
             printWindow.document.close();
+            printWindow.focus();
+
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
         };
 
         Livewire.on('showToast', (data) => {

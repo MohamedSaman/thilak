@@ -41,7 +41,7 @@
         }
 
         .sidebar-header {
-            padding: 2rem 1.5rem;
+            padding: 0.75rem 1.5rem;
             border-bottom: 1px solid var(--admin-gray-100);
         }
 
@@ -57,7 +57,7 @@
         }
 
         .sidebar-nav {
-            padding: 1.5rem 1rem;
+            padding: 0 1rem;
             flex-grow: 1;
             overflow-y: auto;
         }
@@ -215,10 +215,10 @@
 
             <!-- FINANCIALS Section -->
             <div class="nav-section-title">Financials</div>
-            <a href="{{ route('admin.customer-sale-details') }}" class="nav-link {{ request()->routeIs('admin.customer-sale-details') ? 'active' : '' }}">
+            <!-- <a href="{{ route('admin.customer-sale-details') }}" class="nav-link {{ request()->routeIs('admin.customer-sale-details') ? 'active' : '' }}">
                 <i class="bi bi-cart"></i>
                 <span>Sales</span>
-            </a>
+            </a> -->
             <a href="{{ route('admin.view-invoice') }}" class="nav-link {{ request()->routeIs('admin.view-invoice') ? 'active' : '' }}">
                 <i class="bi bi-file-earmark-text"></i>
                 <span>Invoices</span>
